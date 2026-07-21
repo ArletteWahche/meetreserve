@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebFilter ("/employee/*")
+@WebFilter (urlPatterns = {"/employee/*", "/manager/*", "/administrator/*"})
 public class AuthFilter implements Filter {
 	
 	@Override
@@ -39,15 +39,15 @@ public class AuthFilter implements Filter {
 				if (path.startsWith("/employee")) {
 					roleRequis = Role.EMPLOYEE;
 				}
-				if(path.startsWith("/manager")) {
+				else if(path.startsWith("/manager")) {
 					roleRequis = Role.MANAGER;
 				}
-				if(path.startsWith("/administrator")) {
+				else if(path.startsWith("/administrator")) {
 					roleRequis = Role.ADMINISTRATOR;
 				}
 				
-				if(roleRequis != null && user.getRole() != roleRequis ) {
-					httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.jsp?error=accessdenied");
+				else if(roleRequis != null && user.getRole() != roleRequis ) {
+					httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.jsp?error=accessDenied");
 					return;
 				}
 	
