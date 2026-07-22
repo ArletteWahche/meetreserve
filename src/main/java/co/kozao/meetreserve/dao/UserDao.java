@@ -4,77 +4,70 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
+import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.util.DatabaseConnection;
 
 public class UserDao {
 
-    public User findByEmailAndPassword(String email, String password) {
-        String sql = "SELECT id, name, email, password, role FROM users WHERE email = ? AND password = ?";
+	private static final Logger logger = Logger.getLogger(UserDao.class.getName());
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+	public User findByEmail(String email) {
+		try (Connection conn = DatabaseConnection.getConnection();
+			 PreparedStatement ps = conn.prepareStatement(UserSqlQueries.SQL_FIND_BY_EMAIL)) {
 
-            ps.setString(1, email);
-            ps.setString(2, password);
+			ps.setString(1, email);
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setId(rs.getLong("id"));
-                    user.setName(rs.getString("name"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password"));
-                    user.setRole(Role.valueOf(rs.getString("role")));
-                    return user;
-                }
-            }
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					User u = new User();
+					u.setId(rs.getLong("id_user"));
+					u.setName(rs.getString("name"));
+					u.setSurname(rs.getString("surname"));
+					u.setEmail(rs.getString("email"));
+					u.setPassword(rs.getString("password"));
+					u.setRole(Role.valueOf(rs.getString("role")));
+					return u;
+				}
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Erreur lors de la récupération de l'utilisateur", e);
+		}
+		return null;
+	}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+	public boolean existsByEmail(String email) {
+		try (Connection conn = DatabaseConnection.getConnection();
+			 PreparedStatement ps = conn.prepareStatement(UserSqlQueries.SQL_EXISTS_BY_EMAIL)) {
 
-        return null;
-    }
+			ps.setString(1, email);
 
-    public boolean existsByEmail(String email) {
-        String sql = "SELECT 1 FROM users WHERE email = ?";
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next();
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Erreur lors de la vérification de l'email", e);
+		}
+		return false;
+	}
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+	public boolean insert(User user) {
+		try (Connection conn = DatabaseConnection.getConnection();
+			 PreparedStatement ps = conn.prepareStatement(UserSqlQueries.SQL_INSERT_USER)) {
 
-            ps.setString(1, email);
+			ps.setString(1, user.getName());
+			ps.setString(2, user.getSurname());
+			ps.setString(3, user.getEmail());
+			ps.setString(4, user.getPassword());
+			ps.setString(5, user.getRole().name());
 
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean insert(User user) {
-        String sql = "INSERT INTO users(name, email, password, role) VALUES (?, ?, ?, ?)";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, user.getName());
-            ps.setString(2, user.getEmail());
-            ps.setString(3, user.getPassword());
-            ps.setString(4, user.getRole().name());
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
+			return ps.executeUpdate() > 0;
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Erreur lors de l'insertion de l'utilisateur", e);
+		}
+		return false;
+	}
 }
