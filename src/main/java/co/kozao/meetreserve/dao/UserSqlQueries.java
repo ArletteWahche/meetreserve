@@ -18,3 +18,6 @@ public class UserSqlQueries {
 			"INSERT INTO users (name, surname, email, password, role) " +
 			"VALUES (?, ?, ?, ?, ?)";
 }
+
+	
+
