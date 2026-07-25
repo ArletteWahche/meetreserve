@@ -1,20 +1,20 @@
 package co.kozao.meetreserve.model;
 
 public class User {
-
+	
 	private Long id;
 	private String name;
 	private String surname;
 	private String email;
 	private String password;
 	private Role role;
-
-
+	
+	
 	public User() {
 		// nécessaire pour l'utilisation avec les setters (ex: dans le DAO)
 	}
-
-
+	
+	
 	public User(Long id, String name, String surname, String email, String password, Role role ) {
 		this.id = id;
 		this.name = name;
@@ -23,8 +23,7 @@ public class User {
 		this.password = password;
 		this.role = role;
 	}
-
-
+	
 
 	public Long getId() {
 		return id;

@@ -1,6 +1,7 @@
 package co.kozao.meetreserve.dao;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +35,7 @@ public class UserDao {
 				}
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Erreur lors de la récupération de l'utilisateur", e);
+			logger.log(Level.SEVERE, "An error occurred while retrieving the user.", e);
 		}
 		return null;
 	}
@@ -49,7 +50,7 @@ public class UserDao {
 				return rs.next();
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Erreur lors de la vérification de l'email", e);
+			logger.log(Level.SEVERE, "An error occurred while verifying the email.", e);
 		}
 		return false;
 	}
@@ -66,7 +67,7 @@ public class UserDao {
 
 			return ps.executeUpdate() > 0;
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Erreur lors de l'insertion de l'utilisateur", e);
+			logger.log(Level.SEVERE, "Error while inserting the user.", e);
 		}
 		return false;
 	}

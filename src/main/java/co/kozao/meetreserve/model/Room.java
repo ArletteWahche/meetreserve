@@ -1,7 +1,6 @@
 package co.kozao.meetreserve.model;
 
 public class Room {
-
 	
 	private Long id;
 	private String nameRoom;
