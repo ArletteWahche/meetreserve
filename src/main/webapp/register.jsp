@@ -4,12 +4,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MeetReserve Connection</title>
+<title>Registration</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/fontawesome.min.css" />
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/solid.min.css" />
-<style>
-	body{
-		 background:url("${pageContext.request.contextPath}/images/room2.jpg") center/cover no-repeat;
+<style type="text/css">
+
+body{
+		background:url("${pageContext.request.contextPath}/images/room1.jpg") center/cover no-repeat;
         font-family: Inter;
         color: #fff;
         display: flex;
@@ -18,7 +19,7 @@
         height: 100vh;
         margin: 0;
 	}
-	.login-container{
+	.register-container{
 		background-color: rgba(0, 128, 0, 0.8);
         padding: 30px;
         border-radius: 30px;
@@ -77,88 +78,74 @@
    button:hover {
         background-color: #1b5fcc;
    }
-
-   .error {
+   
+    .message {
         color: red;
         margin-top: 15px;
         text-align: center;
     }
-    
+
 </style>
+
 </head>
 <body>
-
-	<div class="login-container">
-		<h2>Login</h2>
+	<div class="register-container">
+		<h2>Registration</h2>
 		
-		<form action="${pageContext.request.contextPath}/login" method="post">
+		<form action="${pageContext.request.contextPath}/register" method="post">
+			<label for="name">Name</label>
+			<input type="text" id="name" name="name" required>
+			
+			<label for="surname">Surname</label>
+			<input type="text" id="surname" name="surname" required>
+			
 			<label for="email">Email</label>
-			<input type="email" id="email" name="email" required>
+			<input type="email" id="email" name="email" required autocomplete="email">
 			
 			<div class="password-wrapper">
 				<label for="password">Password</label>
-			    <input type="password" id="password" name="password" autocomplete="current-password" required>
+			    <input type="password" id="password" name="password" autocomplete="new-password" required>
 			    <span id="togglePassword" class="toggle-icon">
 			        <i class="fa-solid fa-eye"></i>
 			    </span>
 			</div>
 			
-			<button type="submit">Login</button>
+			<button type="submit">Register</button>
 		</form>
 		
-		<p>Don't have an account? <a href="${pageContext.request.contextPath}/register.jsp">Sign Up</a></p>
+		<p>Already have an account? <a href="${pageContext.request.contextPath}/login.jsp">Sign In</a></p>
 		
-		<% String error = request.getParameter("error");
-			if(error != null){
-				String message;
-				switch (error){
-					case "champsVides":
-						message = "Please fill in the blank spaces";
-						break;
-					case "identifiants":
-						message = "Email or Password not correct";
-						break;
-					case "role":
-						message = "Unknown user role";
-						break;
-					default:
-						message = "An error occured";
-						break;
-				}
-		%>
-		<div class="error"><%= message %></div>
-		<%
-			}
-		%>
-	
+		<p class="message">${message}</p>
+		
 	</div>
 	
-	
 	<script>
+	
+		const message = document.querySelector('.message');
 		const inputs = document.querySelectorAll('input');
-		const errorDiv = document.querySelector('.error');
-
-		if (errorDiv) {
-			inputs.forEach(function(input) {
-				input.addEventListener('input', function() {
-					errorDiv.style.display = 'none';
-				});
-			});
-		}
+	
+		inputs.forEach(input => {
+		    input.addEventListener('input', function () {
+		        if (message) {
+		            message.textContent = '';
+		        }
+		    });
+		});
 		
 		const togglePassword = document.getElementById('togglePassword');
 	    const passwordInput = document.getElementById('password');
 	    
-	    togglePassword.addEventListener("click", function () {
-	        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-	        passwordInput.setAttribute("type", type);
+	    togglePassword.addEventListener('click', function () {
+	        const isPassword = passwordInput.type === 'password';
+	        passwordInput.type = isPassword ? 'text' : 'password';
 	        
 	        const icon = this.querySelector('i');
-	        icon.classList.toggle("fa-eye");
-	        icon.classList.toggle("fa-eye-slash");
+	        icon.classList.toggle('fa-eye');
+	        icon.classList.toggle('fa-eye-slash');
 	        
 	    });
 	</script>
-
+	
+	
 </body>
 </html>

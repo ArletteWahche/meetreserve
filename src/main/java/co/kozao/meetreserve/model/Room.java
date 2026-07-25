@@ -66,4 +66,5 @@ public class Room {
 	public void setStatut(String statut) {
 		this.statut = statut;
 	}
+
 }
