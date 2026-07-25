@@ -54,7 +54,7 @@
 	.toggle-icon {
     position: absolute;
     right: 12px;
-    bottom: 12px;
+    bottom: 10px;
     cursor: pointer;
     font-size: 16px;
     color: #666;
