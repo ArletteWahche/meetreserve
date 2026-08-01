@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.model.Role;
-import co.kozao.meetreserve.util.DatabaseConnection;
 
 public class UserDao {
 

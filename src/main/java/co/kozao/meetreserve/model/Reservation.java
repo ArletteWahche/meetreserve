@@ -1,24 +1,33 @@
 package co.kozao.meetreserve.model;
 
-import java.util.Date;
+import java.sql.Time;
+import java.sql.Date;
 
 public class Reservation{
 	private Long id;
-	private Date startDate;
-	private Date endDate;
-	private String motif;
-	private Room room;
-	private User user;
+	private Long UserId;
+	private Date reservationDate;
+	private Time startTime;
+	private Time endTime;
+	private String subject;
+	private ReservationStatus status;
+	private Date createdAt;
 	
-	public Reservation(Long id, Date startDate, Date endDate, String motif, Room room, User user) {
+	public Reservation(Long id, Long UserId, Date reservationDate,Time startTime, Time endTime, String subject,ReservationStatus status,  Date createdAt) {
 		this.id=id;
-		this.startDate=startDate;
-		this.endDate=endDate;
-		this.motif=motif;
-		this.room=room;
-		this.user=user;
+		this.UserId=UserId;
+		this.reservationDate=reservationDate;
+		this.startTime=startTime;
+		this.endTime=endTime;
+		this.subject=subject;
+		this.status=status;
+		this.createdAt=createdAt;
 	}
-
+	
+	public Reservation() {
+		
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -27,43 +36,60 @@ public class Reservation{
 		this.id = id;
 	}
 
-	public Date getStartDate() {
-		return startDate;
+	public Long getUserId() {
+		return UserId;
 	}
 
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
+	public void setUserId(Long UserId) {
+		this.UserId = UserId;
+	}
+	
+	public Date getReservationDate() {
+		return reservationDate;
 	}
 
-	public Date getEndDate() {
-		return endDate;
+	public void setReservationDate(Date reservationDate) {
+		this.reservationDate = reservationDate;
 	}
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public Time getStartTime() {
+		return startTime;
 	}
 
-	public String getMotif() {
-		return motif;
+	public void setStartTime(Time startTime) {
+		this.startTime = startTime;
 	}
 
-	public void setMotif(String motif) {
-		this.motif = motif;
+	public Time getEndTime() {
+		return endTime;
 	}
 
-	public Room getRoom() {
-		return room;
+	public void setEndTime(Time endTime) {
+		this.endTime = endTime;
 	}
 
-	public void setRoom(Room room) {
-		this.room = room;
+	public String getSubject() {
+		return subject;
 	}
 
-	public User getUser() {
-		return user;
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public ReservationStatus getStatus() {
+		return status;
 	}
+
+	public void setStatus(ReservationStatus status) {
+		this.status = status;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
 }
