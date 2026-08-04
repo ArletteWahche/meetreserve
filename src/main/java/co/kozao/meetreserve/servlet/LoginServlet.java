@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         try {
-            User user = userService.authentifier(email, password);
+            User user = userService.login(email, password);
 
             if (user != null) {
                 HttpSession session = request.getSession(true);
@@ -47,13 +47,13 @@ public class LoginServlet extends HttpServlet {
 
                 switch (role) {
                     case EMPLOYEE:
-                        response.sendRedirect(request.getContextPath() + "/employee/home");
+                        response.sendRedirect(request.getContextPath() + "/dashbord/employee");
                         break;
                     case MANAGER:
-                        response.sendRedirect(request.getContextPath() + "/manager/home");
+                        response.sendRedirect(request.getContextPath() + "/dashbord/manager");
                         break;
                     case ADMINISTRATOR:
-                        response.sendRedirect(request.getContextPath() + "/administrator/home");
+                        response.sendRedirect(request.getContextPath() + "/dashbord/administrator");
                         break;
                     default:
                         response.sendRedirect(request.getContextPath() + "/login.jsp?error=role");

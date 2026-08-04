@@ -5,15 +5,19 @@ public class Room {
 	private Long id;
 	private String nameRoom;
 	private Long capacity;
-	private String localisation;
+	private String location;
 	private String statut;
 	
 	
-	public Room(Long id, String nameRoom, Long capacity, String localisation, String statut) {
+	public Room() {
+		
+	}
+	
+	public Room(Long id, String nameRoom, Long capacity, String location, String statut) {
 		this.id = id;
 		this.nameRoom = nameRoom;
 		this.capacity = capacity;
-		this.localisation = localisation;
+		this.location = location;
 		this.statut = statut;
 	}
 
@@ -48,13 +52,13 @@ public class Room {
 	}
 
 
-	public String getLocalisation() {
-		return localisation;
+	public String getLocation() {
+		return location;
 	}
 
 
-	public void setLocalisation(String localisation) {
-		this.localisation = localisation;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 
