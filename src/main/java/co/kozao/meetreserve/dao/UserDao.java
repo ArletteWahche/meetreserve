@@ -14,29 +14,31 @@ import co.kozao.meetreserve.model.Role;
 public class UserDao {
 
 	private static final Logger logger = Logger.getLogger(UserDao.class.getName());
+	
+	public User login(String email, String password) {
+		return null;
+	}
 
 	public User findByEmail(String email) {
-		try (Connection conn = DatabaseConnection.getConnection();
-			 PreparedStatement ps = conn.prepareStatement(UserSqlQueries.SQL_FIND_BY_EMAIL)) {
-
-			ps.setString(1, email);
-
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					User u = new User();
-					u.setId(rs.getLong("id_user"));
-					u.setName(rs.getString("name"));
-					u.setSurname(rs.getString("surname"));
-					u.setEmail(rs.getString("email"));
-					u.setPassword(rs.getString("password"));
-					u.setRole(Role.valueOf(rs.getString("role")));
-					return u;
-				}
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "An error occurred while retrieving the user.", e);
-		}
-		return null;
+	    try (Connection conn = DatabaseConnection.getConnection();
+	         PreparedStatement ps = conn.prepareStatement(UserSqlQueries.SQL_FIND_BY_EMAIL)) {
+	        ps.setString(1, email);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            if (rs.next()) {
+	                return new User.Builder()
+	                        .id(rs.getLong("id_user"))
+	                        .name(rs.getString("name"))
+	                        .surname(rs.getString("surname"))
+	                        .email(rs.getString("email"))
+	                        .password(rs.getString("password"))
+	                        .role(Role.valueOf(rs.getString("role")))
+	                        .build();
+	            }
+	        }
+	    } catch (SQLException e) {
+	        logger.log(Level.SEVERE, "An error occurred while retrieving the user.", e);
+	    }
+	    return null;
 	}
 
 	public boolean existsByEmail(String email) {

@@ -1,87 +1,82 @@
 package co.kozao.meetreserve.model;
 
 public class User {
-	
-	private Long id;
-	private String name;
-	private String surname;
-	private String email;
-	private String password;
-	private Role role;
-	
-	
-	public User() {
-		// nécessaire pour l'utilisation avec les setters (ex: dans le DAO)
-	}
-	
-	
-	public User(Long id, String name, String surname, String email, String password, Role role ) {
-		this.id = id;
-		this.name = name;
-		this.surname = surname;
-		this.email = email;
-		this.password = password;
-		this.role = role;
-	}
-	
+    private Long id;
+    private String name;
+    private String surname;
+    private String email;
+    private String password;
+    private Role role;
 
-	public Long getId() {
-		return id;
-	}
+    // Constructeur privé — utilisé uniquement par le Builder
+    private User(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.surname = builder.surname;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.role = builder.role;
+    }
 
+    // Getters
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getSurname() { return surname; }
+    public String getEmail() { return email; }
+    public String getPassword() { return password; }
+    public Role getRole() { return role; }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    // Setters (gardés, car ton DAO/Service les utilisent)
+    public void setId(Long id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setSurname(String surname) { this.surname = surname; }
+    public void setEmail(String email) { this.email = email; }
+    public void setPassword(String password) { this.password = password; }
+    public void setRole(Role role) { this.role = role; }
 
+    public static class Builder {
+        private Long id;
+        private String name;
+        private String surname;
+        private String email;
+        private String password;
+        private Role role;
 
-	public String getName() {
-		return name;
-	}
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+        public Builder surname(String surname) {
+            this.surname = surname;
+            return this;
+        }
 
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
 
-	public String getSurname() {
-		return surname;
-	}
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
 
+        public Builder role(Role role) {
+            this.role = role;
+            return this;
+        }
 
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-
-	public String getEmail() {
-		return email;
-	}
-
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-
-	public String getPassword() {
-		return password;
-	}
-
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	public Role getRole() {
-		return role;
-	}
-
-
-	public void setRole(Role role) {
-		this.role = role ;
-	}
-
+        public User build() {
+            if (email == null || email.isEmpty()) {
+                throw new IllegalStateException("L'email est obligatoire");
+            }
+            return new User(this);
+        }
+    }
 }

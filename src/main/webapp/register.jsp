@@ -10,7 +10,15 @@
 	<link rel="stylesheet" href="css/register.css" />
 </head>
 <body>
+	
+	<div class="logo-container">
+		<img src="${pageContext.request.contextPath}/images/Log2.png" alt="Logo" class="logo">
+	</div>
+	
+
 	<div class="register-container">
+	
+		
 		<h2>Registration</h2>
 		
 		<form action="${pageContext.request.contextPath}/register" method="post">
