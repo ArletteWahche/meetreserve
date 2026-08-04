@@ -26,12 +26,31 @@ public class UserService {
         return userDao.existsByEmail(email);
     }
 
-    public boolean register(User user) {
-    	if (user.getRole() == null) {
-            throw new IllegalArgumentException("Le rôle est obligatoire");
+    public void validateRegistration(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User is required");
         }
-    	
-    	if (emailExists(user.getEmail())) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (user.getSurname() == null || user.getSurname().isBlank()) {
+            throw new IllegalArgumentException("Surname is required");
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        if (user.getRole() == null) {
+            throw new IllegalArgumentException("Role is required");
+        }
+    }
+
+    public boolean register(User user) {
+        validateRegistration(user);
+
+        if (emailExists(user.getEmail())) {
             return false;
         }
 
@@ -40,5 +59,4 @@ public class UserService {
 
         return userDao.insert(user);
     }
-    
 }

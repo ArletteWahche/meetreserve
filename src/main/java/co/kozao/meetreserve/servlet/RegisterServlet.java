@@ -1,9 +1,11 @@
 package co.kozao.meetreserve.servlet;
 
 import java.io.IOException;
+
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.service.UserService;
+import co.kozao.meetreserve.service.ValidationResult;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,44 +14,46 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
-	private UserService userService;
 
-	@Override
-	public void init() throws ServletException {
-		this.userService = new UserService();
-	}
+    private UserService userService;
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String name = request.getParameter("name");
-		String surname = request.getParameter("surname");
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
+    @Override
+    public void init() throws ServletException {
+        this.userService = new UserService();
+    }
 
-		if (name == null || name.isBlank()
-				|| surname == null || surname.isBlank()
-				|| email == null || email.isBlank()
-				|| password == null || password.isBlank()) {
-			request.setAttribute("message", "Please fill in the blank space.");
-			request.getRequestDispatcher("/register.jsp").forward(request, response);
-			return;
-		}
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-		User user = new User.Builder()
-				.name(name)
-				.surname(surname)
-				.email(email)
-				.password(password) // mot de passe en clair — sera hashé dans UserService
-				.role(Role.EMPLOYEE)
-				.build();
+        String name = request.getParameter("name");
+        String surname = request.getParameter("surname");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-		boolean created = userService.register(user);
-		if (created) {
-			response.sendRedirect(request.getContextPath() + "/login.jsp");
-		} else {
-			request.setAttribute("message", "An account with this email already exists, or an error occurred.");
-			request.getRequestDispatcher("/register.jsp").forward(request, response);
-		}
-	}
-}
+        ValidationResult result = userService.validateRegistration(name, surname, email, password);
+
+        if (!result.isValid()) {
+            request.setAttribute("message", result.getMessage());
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
+            return;
+        }
+
+        User user = new User.Builder()
+                .name(name)
+                .surname(surname)
+                .email(email)
+                .password(password)
+                .role(Role.EMPLOYEE)
+                .build();
+
+        boolean created = userService.register(user);
+
+        if (created) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+        } else {
+            request.setAttribute("message", "An account with this email already exists, or an error occurred.");
+            request.getRequestDispatcher("/register.jsp").forward(request, response);
+        }
+    }
+} 

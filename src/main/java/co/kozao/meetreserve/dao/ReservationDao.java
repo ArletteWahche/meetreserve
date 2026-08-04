@@ -122,15 +122,15 @@ public class ReservationDao {
     }
 
     private Reservation mapRowToReservation(ResultSet rs) throws SQLException {
-        Reservation reservation = new Reservation();
-        reservation.setId(rs.getLong("id_reservation"));
-        reservation.setUserId(rs.getLong("id_user"));
-        reservation.setReservationDate(rs.getDate("reservation_date"));
-        reservation.setStartTime(rs.getTime("start_time"));
-        reservation.setEndTime(rs.getTime("end_time"));
-        reservation.setSubject(rs.getString("subject"));
-        reservation.setStatus(ReservationStatus.valueOf(rs.getString("status")));
-        reservation.setCreatedAt(rs.getDate("created_at"));
-        return reservation;
+        return new Reservation.Builder()
+                .id(rs.getLong("id_reservation"))
+                .userId(rs.getLong("id_user"))
+                .reservationDate(rs.getDate("reservation_date"))
+                .startTime(rs.getTime("start_time"))
+                .endTime(rs.getTime("end_time"))
+                .subject(rs.getString("subject"))
+                .status(ReservationStatus.valueOf(rs.getString("status")))
+                .createdAt(rs.getDate("created_at"))
+                .build();
     }
 }
