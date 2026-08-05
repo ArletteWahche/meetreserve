@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.dao;
+package co.kozao.meetreserve.dao.query;
 
 public class ReservationSqlQueries {
 
@@ -6,8 +6,18 @@ public class ReservationSqlQueries {
 	}
 
 	public static final String SQL_INSERT_RESERVATION = 
-			"INSERT INTO reservations (user_id, reservation_date, start_time, end_time, subject, status, created_at) "
-			+ "VALUES (?,?,?,?,?,?,?)";
+			"INSERT INTO reservations (user_id, room_id, reservation_date, start_time, end_time, subject, status, created_at) "
+			+ "VALUES (?,?,?,?,?,?,?,?)";
+
+	public static final String SQL_UPDATE_RESERVATION =
+			"UPDATE reservations "
+			+ "SET user_id = ?, room_id = ?, reservation_date = ?, start_time = ?, end_time = ?, subject = ?, status = ? "
+			+ "WHERE id_reservation = ?";
+
+	public static final String SQL_DELETE_RESERVATION =
+			"UPDATE reservations "
+					+ "SET deleted = true "
+					+ "WHERE id_reservation = ?";
 
 	public static final String SQL_FIND_BY_ID = 
 			"SELECT id_reservation, user_id, room_id, reservation_date, start_time, end_time, status "
@@ -24,8 +34,4 @@ public class ReservationSqlQueries {
 
 	public static final String SQL_UPDATE_STATUS = 
 			"UPDATE reservations SET status = ? WHERE id_reservation = ?";
-
-	public static final String SQL_DELETE_RESERVATION = 
-			"DELETE FROM reservations WHERE id_reservation = ?";
-
 }

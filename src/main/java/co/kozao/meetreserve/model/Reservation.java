@@ -1,29 +1,33 @@
 package co.kozao.meetreserve.model;
 
+import java.util.Date;
 import java.sql.Time;
-import java.sql.Date;
 
 public class Reservation {
 
 	private Long id;
 	private Long userId;
+	private Long roomId;
 	private Date reservationDate;
 	private Time startTime;
 	private Time endTime;
 	private String subject;
 	private ReservationStatus status;
 	private Date createdAt;
+	private boolean deleted;
 
 	// Constructeur privé — utilisé uniquement par le Builder
 	private Reservation(Builder builder) {
 		this.id = builder.id;
 		this.userId = builder.userId;
+		this.roomId = builder.roomId;
 		this.reservationDate = builder.reservationDate;
 		this.startTime = builder.startTime;
 		this.endTime = builder.endTime;
 		this.subject = builder.subject;
 		this.status = builder.status;
 		this.createdAt = builder.createdAt;
+		this.deleted = builder.deleted;
 	}
 
 	public Long getId() {
@@ -90,15 +94,31 @@ public class Reservation {
 		this.createdAt = createdAt;
 	}
 
+	public Long getRoomId() {
+		return roomId;
+	}
+	public void setRoomId(Long roomId) {
+		this.roomId = roomId;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	public static class Builder {
 		private Long id;
 		private Long userId;
+		private Long roomId;
 		private Date reservationDate;
 		private Time startTime;
 		private Time endTime;
 		private String subject;
 		private ReservationStatus status;
 		private Date createdAt;
+		private boolean deleted;
 
 		public Builder id(Long id) {
 			this.id = id;
@@ -107,6 +127,11 @@ public class Reservation {
 
 		public Builder userId(Long userId) {
 			this.userId = userId;
+			return this;
+		}
+
+		public Builder roomId(Long roomId) {
+			this.roomId = roomId;
 			return this;
 		}
 
@@ -140,16 +165,12 @@ public class Reservation {
 			return this;
 		}
 
+		public Builder deleted(boolean deleted) {
+			this.deleted = deleted;
+			return this;
+		}
+
 		public Reservation build() {
-			if (userId == null) {
-				throw new IllegalStateException("The user is required");
-			}
-			if (reservationDate == null) {
-				throw new IllegalStateException("The reservation date is required");
-			}
-			if (startTime == null || endTime == null) {
-				throw new IllegalStateException("The start and end date is required");
-			}
 			return new Reservation(this);
 		}
 	}

@@ -6,17 +6,10 @@ public class Room {
 	private String nameRoom;
 	private Long capacity;
 	private String location;
-	private String statut;
+	private String description;
+	private boolean isDeleted;
 	
 		public Room() {
-		}
-
-		public Room(Long id, String nameRoom, Long capacity, String location, String statut) {
-			this.id = id;
-			this.nameRoom = nameRoom;
-			this.capacity = capacity;
-			this.location = location;
-			this.statut = statut;
 		}
 
 		// Constructeur privé utilisé par le Builder
@@ -25,7 +18,8 @@ public class Room {
 			this.nameRoom = builder.nameRoom;
 			this.capacity = builder.capacity;
 			this.location = builder.location;
-			this.statut = builder.statut;
+			this.description = builder.description;
+			this.isDeleted = builder.isDeleted;
 		}
 
 		public Long getId() {
@@ -60,12 +54,20 @@ public class Room {
 			this.location = location;
 		}
 
-		public String getStatut() {
-			return statut;
+		public String getDescription() {
+			return description;
 		}
 
-		public void setStatut(String statut) {
-			this.statut = statut;
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
+		public boolean getIsDeleted() {
+			return isDeleted;
+		}
+
+		public void setIsDeleted(boolean isDeleted) {
+			this.isDeleted = isDeleted;
 		}
 
 		// ==== Builder ====
@@ -74,7 +76,8 @@ public class Room {
 			private String nameRoom;
 			private Long capacity;
 			private String location;
-			private String statut;
+			private String description;
+			private boolean isDeleted;
 
 			public Builder id(Long id) {
 				this.id = id;
@@ -96,15 +99,17 @@ public class Room {
 				return this;
 			}
 
-			public Builder statut(String statut) {
-				this.statut = statut;
+			public Builder description(String description) {
+				this.description = description;
+				return this;
+			}
+
+			public Builder isDeleted(boolean isDeleted) {
+				this.isDeleted = isDeleted;
 				return this;
 			}
 
 			public Room build() {
-				if (nameRoom == null || nameRoom.isBlank()) {
-					throw new IllegalStateException("The room name is required.");
-				}
 				return new Room(this);
 			}
 		}

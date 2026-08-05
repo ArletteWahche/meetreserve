@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.dao;
+package co.kozao.meetreserve.dao.database;
 
 import java.sql.Connection;
 

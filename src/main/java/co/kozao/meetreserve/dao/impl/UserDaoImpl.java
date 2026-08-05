@@ -1,7 +1,7 @@
 package co.kozao.meetreserve.dao.impl;
 
-import co.kozao.meetreserve.dao.DatabaseConnection;
-import co.kozao.meetreserve.dao.UserSqlQueries;
+import co.kozao.meetreserve.dao.database.DatabaseConnection;
+import co.kozao.meetreserve.dao.query.UserSqlQueries;
 import co.kozao.meetreserve.dao.service.UserDAO;
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;

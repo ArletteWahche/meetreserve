@@ -1,43 +1,46 @@
 package co.kozao.meetreserve.service;
 
-import java.util.List;
-import co.kozao.meetreserve.dao.ReservationDao;
+import co.kozao.meetreserve.dao.impl.ReservationDaoImpl;
+import co.kozao.meetreserve.mapper.ReservationMapper;
 import co.kozao.meetreserve.model.Reservation;
-import co.kozao.meetreserve.model.ReservationStatus;
-import co.kozao.meetreserve.model.Room;
+import co.kozao.meetreserve.web.dto.response.ReservationResponse;
+import co.kozao.meetreserve.web.dto.resquest.ReservationRequest;
+
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class ReservationService {
 
-    private final ReservationDao reservationDao = new ReservationDao();
+    private static Logger logger = Logger.getLogger(ReservationService.class.getName());
 
-    public List<Reservation> getReservationsByUserId(Long userId) {
-        return reservationDao.findByUserId(userId);
+    private ReservationDaoImpl reservationDao;
+    private ReservationMapper  reservationMapper;
+
+    public ReservationService() {
+        this.reservationDao = new ReservationDaoImpl();
+        this.reservationMapper = new ReservationMapper();
     }
-    
-    public Reservation getReservationById(Long id) {
-    	return reservationDao.findById(id);
+
+    public ReservationResponse addReservation(ReservationRequest request) {
+        // Implement the logic to add a reservation using the reservationDao
+        // Convert ReservationRequest to Reservation model, call reservationDao.insert(), and return a ReservationResponse
+        return null; // Placeholder for actual implementation
+
     }
-    
-    public List<Reservation> getAllReservations() {
-        return reservationDao.findAll();
+
+    public List<ReservationResponse> getReservationByUserId(long userId) {
+        List<Reservation> userReservation = reservationDao.findByUserId(userId);
+        return userReservation.stream()
+                .map(reservationMapper::toReservationResponse)
+                .collect(Collectors.toList());
     }
-    
-    public boolean addReservation(Reservation reservation) {
-    	if(reservation == null) {
-    		throw new IllegalArgumentException("Reservation is required");
-    	}
-    	return reservationDao.insert(reservation);
+
+    public List<ReservationResponse> getReservations() {
+        List<Reservation> reservations = reservationDao.findAll();
+        return reservations.stream()
+                .map(reservationMapper::toReservationResponse)
+                .collect(Collectors.toList());
     }
-    
-    public boolean updateStatus(long reservationId, ReservationStatus status) {
-    	if(status == null) {
-    		throw new IllegalArgumentException("Status is required");
-    	}
-    	return reservationDao.updateStatus(reservationId, status);
-    }
-    
-    public boolean deleteReservation(Long id) {
-    	
-    	return reservationDao.delete(id);
-    }
+
 }
