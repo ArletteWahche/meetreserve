@@ -6,69 +6,111 @@ public class Room {
 	private String nameRoom;
 	private Long capacity;
 	private String location;
-	private String statut;
+	private String description;
+	private boolean isDeleted;
 	
-	
-	public Room() {
-		
-	}
-	
-	public Room(Long id, String nameRoom, Long capacity, String location, String statut) {
-		this.id = id;
-		this.nameRoom = nameRoom;
-		this.capacity = capacity;
-		this.location = location;
-		this.statut = statut;
-	}
+		public Room() {
+		}
 
+		// Constructeur privé utilisé par le Builder
+		private Room(Builder builder) {
+			this.id = builder.id;
+			this.nameRoom = builder.nameRoom;
+			this.capacity = builder.capacity;
+			this.location = builder.location;
+			this.description = builder.description;
+			this.isDeleted = builder.isDeleted;
+		}
 
-	public Long getId() {
-		return id;
-	}
+		public Long getId() {
+			return id;
+		}
 
+		public void setId(Long id) {
+			this.id = id;
+		}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+		public String getNameRoom() {
+			return nameRoom;
+		}
 
+		public void setNameRoom(String nameRoom) {
+			this.nameRoom = nameRoom;
+		}
 
-	public String getNameRoom() {
-		return nameRoom;
-	}
+		public Long getCapacity() {
+			return capacity;
+		}
 
+		public void setCapacity(Long capacity) {
+			this.capacity = capacity;
+		}
 
-	public void setNameRoom(String nameRoom) {
-		this.nameRoom = nameRoom;
-	}
+		public String getLocation() {
+			return location;
+		}
 
+		public void setLocation(String location) {
+			this.location = location;
+		}
 
-	public Long getCapacity() {
-		return capacity;
-	}
+		public String getDescription() {
+			return description;
+		}
 
+		public void setDescription(String description) {
+			this.description = description;
+		}
 
-	public void setCapacity(Long capacity) {
-		this.capacity = capacity;
-	}
+		public boolean getIsDeleted() {
+			return isDeleted;
+		}
 
+		public void setIsDeleted(boolean isDeleted) {
+			this.isDeleted = isDeleted;
+		}
 
-	public String getLocation() {
-		return location;
-	}
+		// ==== Builder ====
+		public static class Builder {
+			private Long id;
+			private String nameRoom;
+			private Long capacity;
+			private String location;
+			private String description;
+			private boolean isDeleted;
 
+			public Builder id(Long id) {
+				this.id = id;
+				return this;
+			}
 
-	public void setLocation(String location) {
-		this.location = location;
-	}
+			public Builder nameRoom(String nameRoom) {
+				this.nameRoom = nameRoom;
+				return this;
+			}
 
+			public Builder capacity(Long capacity) {
+				this.capacity = capacity;
+				return this;
+			}
 
-	public String getStatut() {
-		return statut;
-	}
+			public Builder location(String location) {
+				this.location = location;
+				return this;
+			}
 
+			public Builder description(String description) {
+				this.description = description;
+				return this;
+			}
 
-	public void setStatut(String statut) {
-		this.statut = statut;
-	}
+			public Builder isDeleted(boolean isDeleted) {
+				this.isDeleted = isDeleted;
+				return this;
+			}
 
+			public Room build() {
+				return new Room(this);
+			}
+		}
 }

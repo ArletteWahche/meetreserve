@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.servlet.dashboard;
+package co.kozao.meetreserve.web.webservice.dashboard;
 
 import java.io.IOException;
 

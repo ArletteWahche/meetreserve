@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.servlet;
+package co.kozao.meetreserve.web.webservice.auth;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet ("/Logout")
+@WebServlet ("/logout")
 public class LogoutServlet extends HttpServlet{
 	
 	@Override

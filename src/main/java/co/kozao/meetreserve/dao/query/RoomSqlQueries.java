@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.dao;
+package co.kozao.meetreserve.dao.query;
 
 public class RoomSqlQueries {
 	
@@ -16,6 +16,8 @@ public class RoomSqlQueries {
 	public static final String SQL_UPDATE_ROOM = "UPDATE room "
 			+ "									  SET name = ?, capacity = ?, location = ?, description = ?, "
 			+ "									  WHERE id_room = ?";
-	public static final String SQL_DELETE_ROOM = "DELETE FROM room WHERE id_room = ?";
+	public static final String SQL_DELETE_ROOM = "UPDATE room "
+			+ "									  SET isDeleted = ?, "
+			+ "									  WHERE id_room = ?";
 
 }
