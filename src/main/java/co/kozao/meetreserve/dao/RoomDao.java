@@ -1,6 +1,7 @@
 package co.kozao.meetreserve.dao;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import co.kozao.meetreserve.model.Room;
+import co.kozao.meetreserve.dao.RoomSqlQueries;
 
 public class RoomDao {
 	private static final Logger logger = Logger.getLogger(RoomDao.class.getName());
