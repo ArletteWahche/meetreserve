@@ -1,10 +1,11 @@
-package co.kozao.meetreserve.servlet;
+package co.kozao.meetreserve.web.webservice.auth;
 
 import java.io.IOException;
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.service.UserService;
 import co.kozao.meetreserve.service.ValidationResult;
+import co.kozao.meetreserve.web.dto.resquest.UserRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -35,12 +36,11 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        User user = new User.Builder()
+        UserRequest user = new UserRequest.Builder()
                 .name(name)
                 .surname(surname)
                 .email(email)
                 .password(password)
-                .role(Role.EMPLOYEE)
                 .build();
 
         boolean created = userService.register(user);

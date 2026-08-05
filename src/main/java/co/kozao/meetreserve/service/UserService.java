@@ -1,26 +1,46 @@
 package co.kozao.meetreserve.service;
 
-import org.mindrot.jbcrypt.BCrypt;
-import co.kozao.meetreserve.dao.UserDao;
+import co.kozao.meetreserve.dao.impl.UserDaoImpl;
+import co.kozao.meetreserve.mapper.UserMapper;
+import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
+import co.kozao.meetreserve.web.dto.response.UserResponse;
+import co.kozao.meetreserve.web.dto.resquest.UserRequest;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
-    private final UserDao userDao;
+    private final UserDaoImpl userDao;
+    private final UserMapper mapper;
 
     public UserService() {
-        this.userDao = new UserDao();
+        this.userDao = new UserDaoImpl();
+        this.mapper = new UserMapper();
     }
 
-    public User login(String email, String rawPassword) {
+    public UserResponse login(String email, String rawPassword) {
         User user = userDao.findByEmail(email);
-        if (user != null && BCrypt.checkpw(rawPassword, user.getPassword())) {
-            return user;
+        boolean isCorrectPassword = user != null && BCrypt.checkpw(rawPassword, user.getPassword());
+        if (isCorrectPassword) {
+            return mapper.toResponse(user);
         }
         return null;
     }
 
     public boolean emailExists(String email) {
         return userDao.existsByEmail(email);
+    }
+
+    public boolean register(UserRequest user) {
+        if (emailExists(user.getEmail())) {
+            return false;
+        }
+
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        User userToInsert = mapper.mapToEntity(user);
+        userToInsert.setPassword(hashedPassword);
+        userToInsert.setRole(Role.EMPLOYEE);
+
+        return userDao.insert(userToInsert);
     }
 
     public ValidationResult validateRegistration(String name, String surname, String email, String password) {
@@ -47,7 +67,6 @@ public class UserService {
     private boolean isAnyFieldEmpty(String name, String surname, String email, String password) {
         return isBlank(name) || isBlank(surname) || isBlank(email) || isBlank(password);
     }
-
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
     }
@@ -58,27 +77,5 @@ public class UserService {
 
     private boolean isValidPassword(String password) {
         return password.length() >= 6;
-    }
-
-    public boolean register(User user) {
-        if (user.getRole() == null) {
-            throw new IllegalArgumentException("The role is required");
-        }
-
-        if (emailExists(user.getEmail())) {
-            return false;
-        }
-
-        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-
-        User userToInsert = new User.Builder()
-                .name(user.getName())
-                .surname(user.getSurname())
-                .email(user.getEmail())
-                .password(hashedPassword)
-                .role(user.getRole())
-                .build();
-
-        return userDao.insert(userToInsert);
     }
 }

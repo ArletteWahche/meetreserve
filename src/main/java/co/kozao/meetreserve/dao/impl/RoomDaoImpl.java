@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.dao;
+package co.kozao.meetreserve.dao.impl;
 
 import java.sql.Connection;
 
@@ -10,15 +10,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import co.kozao.meetreserve.model.Room;
+import co.kozao.meetreserve.dao.DatabaseConnection;
 import co.kozao.meetreserve.dao.RoomSqlQueries;
+import co.kozao.meetreserve.model.Room;
 
-public class RoomDao {
-	private static final Logger logger = Logger.getLogger(RoomDao.class.getName());
+public class RoomDaoImpl {
+	private static final Logger logger = Logger.getLogger(RoomDaoImpl.class.getName());
 
 	public boolean insert(Room room) {
 		try (Connection conn = DatabaseConnection.getConnection();
-				PreparedStatement ps = conn.prepareStatement(RoomSqlQueries.SQL_INSERT_ROOM)) {
+		     PreparedStatement ps = conn.prepareStatement(RoomSqlQueries.SQL_INSERT_ROOM)) {
 
 			ps.setString(1, room.getNameRoom());
 			ps.setLong(2, room.getCapacity());

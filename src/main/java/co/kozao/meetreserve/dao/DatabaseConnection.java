@@ -17,14 +17,20 @@ public class DatabaseConnection {
 		// empêche l'instanciation, classe utilitaire (Singleton)
 	}
 
-	public static Connection getConnection() throws SQLException {
-		if (connection == null || connection.isClosed()) {
-			try {
-				Class.forName("org.postgresql.Driver");
-				connection = DriverManager.getConnection(URL, USER, PASSWORD);
-			} catch (ClassNotFoundException e) {
-				throw new SQLException("Driver PostgreSQL introuvable", e);
-			}
+	private static Connection getConnection() throws SQLException {
+		try {
+			Class.forName("org.postgresql.Driver");
+			connection = DriverManager.getConnection(URL, USER, PASSWORD);
+			return connection;
+		} catch (ClassNotFoundException e) {
+			throw new SQLException("Driver PostgreSQL introuvable", e);
+		}
+	}
+
+	public static Connection getInstance() throws SQLException{
+		if(connection == null || connection.isClosed()){
+			connection = getConnection();
+			return connection;
 		}
 		return connection;
 	}

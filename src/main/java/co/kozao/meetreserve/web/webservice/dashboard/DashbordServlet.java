@@ -1,10 +1,10 @@
-package co.kozao.meetreserve.servlet;
+package co.kozao.meetreserve.web.webservice.dashboard;
 
 import java.io.IOException;
 import java.util.List;
 
 import co.kozao.meetreserve.dao.ReservationDao;
-import co.kozao.meetreserve.dao.RoomDao;
+import co.kozao.meetreserve.dao.impl.RoomDaoImpl;
 import co.kozao.meetreserve.model.Reservation;
 import co.kozao.meetreserve.model.Room;
 import co.kozao.meetreserve.model.User;
@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet("/dashbord/employee")
 public class DashbordServlet extends HttpServlet {
 	
-	private final RoomDao roomDao = new RoomDao();
+	private final RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
 	private final ReservationDao reservationDao = new ReservationDao();
 	
 	@Override
@@ -35,7 +35,7 @@ public class DashbordServlet extends HttpServlet {
 			
 			User user = (User) session.getAttribute("userConnect");
 			
-			List<Room> rooms = roomDao.findAll();
+			List<Room> rooms = roomDaoImpl.findAll();
 			List<Reservation> reservations = reservationDao.findByUserId(user.getId());
 			
 			request.setAttribute("user", user);

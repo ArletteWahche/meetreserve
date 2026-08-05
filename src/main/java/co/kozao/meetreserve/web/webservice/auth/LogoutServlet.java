@@ -1,4 +1,4 @@
-package co.kozao.meetreserve.servlet;
+package co.kozao.meetreserve.web.webservice.auth;
 
 import java.io.IOException;
 

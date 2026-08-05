@@ -1,13 +1,11 @@
-package co.kozao.meetreserve.servlet.dashboard;
-
-import java.io.IOException;
-import java.util.List;
+package co.kozao.meetreserve.web.webservice.dashboard;
 
 import co.kozao.meetreserve.dao.ReservationDao;
-import co.kozao.meetreserve.dao.RoomDao;
+import co.kozao.meetreserve.dao.impl.RoomDaoImpl;
 import co.kozao.meetreserve.model.Reservation;
 import co.kozao.meetreserve.model.Room;
-import co.kozao.meetreserve.model.User;
+import co.kozao.meetreserve.service.UserService;
+import co.kozao.meetreserve.web.dto.response.UserResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,11 +13,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Logger;
+
 @WebServlet("/dashboard/employee")
 public class EmployeeDashboardServlet extends HttpServlet {
 
-    private final RoomDao roomDao = new RoomDao();
+    private static final Logger LOG = Logger.getLogger(EmployeeDashboardServlet.class.getName());
+
+    private final RoomDaoImpl roomDaoImpl = new RoomDaoImpl();
     private final ReservationDao reservationDao = new ReservationDao();
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        this.userService = new UserService();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -27,14 +37,14 @@ public class EmployeeDashboardServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("user") == null) {
+        if (session == null || session.getAttribute("userConnected") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        User user = (User) session.getAttribute("user");
+        UserResponse user = (UserResponse) session.getAttribute("userConnected");
 
-        List<Room> rooms = roomDao.findAll();
+        List<Room> rooms = roomDaoImpl.findAll();
         List<Reservation> reservations = reservationDao.findByUserId(user.getId());
 
         request.setAttribute("user", user);
