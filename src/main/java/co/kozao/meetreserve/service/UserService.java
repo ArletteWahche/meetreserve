@@ -1,12 +1,10 @@
 package co.kozao.meetreserve.service;
 
 import org.mindrot.jbcrypt.BCrypt;
-
 import co.kozao.meetreserve.dao.UserDao;
 import co.kozao.meetreserve.model.User;
 
 public class UserService {
-
     private final UserDao userDao;
 
     public UserService() {
@@ -15,7 +13,6 @@ public class UserService {
 
     public User login(String email, String rawPassword) {
         User user = userDao.findByEmail(email);
-
         if (user != null && BCrypt.checkpw(rawPassword, user.getPassword())) {
             return user;
         }
@@ -26,37 +23,62 @@ public class UserService {
         return userDao.existsByEmail(email);
     }
 
-    public void validateRegistration(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User is required");
+    public ValidationResult validateRegistration(String name, String surname, String email, String password) {
+
+        if (isAnyFieldEmpty(name, surname, email, password)) {
+            return ValidationResult.failure("Please fill in the blank space.");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new IllegalArgumentException("Name is required");
+
+        if (!isValidEmail(email)) {
+            return ValidationResult.failure("Please enter a valid email address.");
         }
-        if (user.getSurname() == null || user.getSurname().isBlank()) {
-            throw new IllegalArgumentException("Surname is required");
+
+        if (!isValidPassword(password)) {
+            return ValidationResult.failure("Password must be at least 6 characters long.");
         }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new IllegalArgumentException("Email is required");
+
+        if (emailExists(email)) {
+            return ValidationResult.failure("An account with this email already exists.");
         }
-        if (user.getPassword() == null || user.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-        if (user.getRole() == null) {
-            throw new IllegalArgumentException("Role is required");
-        }
+
+        return ValidationResult.success();
+    }
+
+    private boolean isAnyFieldEmpty(String name, String surname, String email, String password) {
+        return isBlank(name) || isBlank(surname) || isBlank(email) || isBlank(password);
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
+    }
+
+    private boolean isValidEmail(String email) {
+        return email.matches("^[\\w.-]+@[\\w.-]+\\.\\w+$");
+    }
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 6;
     }
 
     public boolean register(User user) {
-        validateRegistration(user);
+        if (user.getRole() == null) {
+            throw new IllegalArgumentException("The role is required");
+        }
 
         if (emailExists(user.getEmail())) {
             return false;
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-        user.setPassword(hashedPassword);
 
-        return userDao.insert(user);
+        User userToInsert = new User.Builder()
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .password(hashedPassword)
+                .role(user.getRole())
+                .build();
+
+        return userDao.insert(userToInsert);
     }
 }

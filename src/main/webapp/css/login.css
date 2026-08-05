@@ -10,7 +10,7 @@ body{
         margin: 0;
 	}
 	.login-container{
-		background-color: rgba(0, 128, 0, 0.8);
+		background-color: rgba(139, 69, 19, 0.8);
         padding: 30px;
         border-radius: 30px;
         box-shadow: 1px 5px 25px;
@@ -20,8 +20,8 @@ body{
 	}
 	
 	.logo-container {
-    margin-bottom: 10%;
-    margin-left: -85%;
+    margin-top: 20px;
+    align-items: center;
 	}
 
 	.logo {

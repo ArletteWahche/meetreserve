@@ -1,7 +1,6 @@
 package co.kozao.meetreserve.servlet;
 
 import java.io.IOException;
-
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.service.UserService;
@@ -14,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
-
     private UserService userService;
 
     @Override
@@ -25,14 +23,12 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         ValidationResult result = userService.validateRegistration(name, surname, email, password);
-
         if (!result.isValid()) {
             request.setAttribute("message", result.getMessage());
             request.getRequestDispatcher("/register.jsp").forward(request, response);
@@ -48,7 +44,6 @@ public class RegisterServlet extends HttpServlet {
                 .build();
 
         boolean created = userService.register(user);
-
         if (created) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         } else {
@@ -56,4 +51,4 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/register.jsp").forward(request, response);
         }
     }
-} 
+}
