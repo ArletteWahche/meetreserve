@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@WebServlet("/dashboard/employee")
+@WebServlet("/dashbord/employee")
 public class EmployeeDashboardServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(EmployeeDashboardServlet.class.getName());

@@ -1,7 +1,5 @@
 package co.kozao.meetreserve.web.dto.resquest;
 
-import co.kozao.meetreserve.model.Room;
-
 public class RoomRequest {
 
     private String nameRoom;

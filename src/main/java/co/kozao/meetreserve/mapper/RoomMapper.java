@@ -29,7 +29,6 @@ public class RoomMapper {
         room.setCapacity(roomRequest.getCapacity());
         room.setLocation(roomRequest.getLocation());
         room.setDescription(roomRequest.getDescription());
-        room.setIsDeleted(roomRequest.getIsDeleted());
         return room;
     }
 }

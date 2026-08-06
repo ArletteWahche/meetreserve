@@ -36,13 +36,13 @@ public class AuthFilter implements Filter {
 			String path = httpRequest .getRequestURI().substring(httpRequest.getContextPath().length());
 			
 				Role roleRequis = null;
-				if (path.startsWith("/employee")) {
+				if (path.endsWith("/employee")) {
 					roleRequis = Role.EMPLOYEE;
 				}
-				else if(path.startsWith("/manager")) {
+				else if(path.endsWith("/manager")) {
 					roleRequis = Role.MANAGER;
 				}
-				else if(path.startsWith("/administrator")) {
+				else if(path.endsWith("/administrator")) {
 					roleRequis = Role.ADMINISTRATOR;
 				}
 				
