@@ -1,7 +1,5 @@
 package co.kozao.meetreserve.web.webservice.dashboard;
 
-import co.kozao.meetreserve.mapper.RoomMapper;
-import co.kozao.meetreserve.model.Reservation;
 import co.kozao.meetreserve.service.ReservationService;
 import co.kozao.meetreserve.service.RoomService;
 import co.kozao.meetreserve.web.dto.response.ReservationResponse;
@@ -15,9 +13,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @WebServlet("/dashbord/employee")
 public class EmployeeDashboardServlet extends HttpServlet {
@@ -25,13 +24,11 @@ public class EmployeeDashboardServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(EmployeeDashboardServlet.class.getName());
 
     private RoomService roomService;
-    private RoomMapper roomMapper;
     private ReservationService reservationService;
 
     @Override
     public void init() throws ServletException {
         this.roomService = new RoomService();
-        this.roomMapper = new RoomMapper();
         this.reservationService = new ReservationService();
     }
 
@@ -50,18 +47,21 @@ public class EmployeeDashboardServlet extends HttpServlet {
 
         List<RoomResponse> rooms = roomService.getAllRooms();
         List<ReservationResponse> reservations = reservationService.getReservations();
-        List<Long> roomReserved = reservations.stream()
-                .map(ReservationResponse::getRoomId)
-                .toList();
-
-        List<RoomResponse> roomResponses = rooms.stream()
-                .filter(room -> !roomReserved.contains(room.getId()))
-                .toList();
         List<ReservationResponse> userReservations = reservationService.getReservationByUserId(user.getId());
+
+        List<RoomResponse> roomResponses  = new ArrayList<>();
+        if(!rooms.isEmpty() && !reservations.isEmpty()) {
+            List<Long> roomReserved = reservations.stream()
+                    .map(ReservationResponse::getRoomId)
+                    .toList();
+            roomResponses = rooms.stream()
+                    .filter(room -> !roomReserved.contains(room.getId()))
+                    .toList();
+        }
 
         request.setAttribute("user", user);
         request.setAttribute("rooms", roomResponses);
-        request.setAttribute("reservations", userReservations);
+        request.setAttribute("reservations", userReservations.isEmpty() ? Collections.emptyList() : userReservations);
 
         request.getRequestDispatcher("/employee/dashboard.jsp").forward(request, response);
     }
