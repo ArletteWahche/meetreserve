@@ -1,7 +1,10 @@
 package co.kozao.meetreserve.web.webservice.dashboard;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
+import co.kozao.meetreserve.model.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,7 +25,9 @@ public class AdministratorDashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+        List<String> roles = Arrays.stream(Role.values()).map(Role::name).toList();
 
+        request.setAttribute("roles", roles);
         request.getRequestDispatcher("/administrator/dashboard.jsp").forward(request, response);
     }
 }
