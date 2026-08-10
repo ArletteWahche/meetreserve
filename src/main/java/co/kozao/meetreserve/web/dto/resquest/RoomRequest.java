@@ -6,6 +6,7 @@ public class RoomRequest {
     private Long capacity;
     private String location;
     private String description;
+    private boolean available = true;
 
     // Constructeur privé utilisé par le Builder
     public RoomRequest(Builder builder) {
@@ -13,6 +14,7 @@ public class RoomRequest {
         this.capacity = builder.capacity;
         this.location = builder.location;
         this.description = builder.description;
+        this.available = builder.available;
     }
 
     public String getNameRoom() {
@@ -38,10 +40,23 @@ public class RoomRequest {
     public void setLocation(String location) {
         this.location = location;
     }
+    
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
 
     public String getDescription() {
         return description;
     }
+    
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     // ==== Builder ====
     public static class Builder {
@@ -49,6 +64,7 @@ public class RoomRequest {
         private Long capacity;
         private String location;
         private String description;
+        private Boolean available;
 
         public Builder nameRoom(String nameRoom) {
             this.nameRoom = nameRoom;
@@ -67,6 +83,11 @@ public class RoomRequest {
 
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+        
+        public Builder available(Boolean available) {
+            this.available = available;
             return this;
         }
 

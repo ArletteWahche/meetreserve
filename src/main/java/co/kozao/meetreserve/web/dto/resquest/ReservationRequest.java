@@ -1,7 +1,5 @@
 package co.kozao.meetreserve.web.dto.resquest;
 
-import co.kozao.meetreserve.model.Reservation;
-
 import java.sql.Time;
 import java.util.Date;
 

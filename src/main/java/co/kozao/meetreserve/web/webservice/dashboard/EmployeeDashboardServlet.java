@@ -63,6 +63,6 @@ public class EmployeeDashboardServlet extends HttpServlet {
         request.setAttribute("rooms", roomResponses);
         request.setAttribute("reservations", userReservations.isEmpty() ? Collections.emptyList() : userReservations);
 
-        request.getRequestDispatcher("/employee/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/employee/dashbord.jsp").forward(request, response);
     }
 }

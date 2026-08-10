@@ -1,116 +1,131 @@
 package co.kozao.meetreserve.model;
 
+
 public class Room {
-	
-	private Long id;
-	private String nameRoom;
-	private Long capacity;
-	private String location;
-	private String description;
-	private boolean isDeleted;
-	
-		public Room() {
-		}
 
-		// Constructeur privé utilisé par le Builder
-		private Room(Builder builder) {
-			this.id = builder.id;
-			this.nameRoom = builder.nameRoom;
-			this.capacity = builder.capacity;
-			this.location = builder.location;
-			this.description = builder.description;
-			this.isDeleted = builder.isDeleted;
-		}
+    private Long id;
+    private String nameRoom;
+    private Long capacity;
+    private String location;
+    private String description;
+    private Boolean available;
+    private Boolean deleted;
 
-		public Long getId() {
-			return id;
-		}
+    public Room() {
+    }
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+    private Room(Builder builder) {
+        this.id = builder.id;
+        this.nameRoom = builder.nameRoom;
+        this.capacity = builder.capacity;
+        this.location = builder.location;
+        this.description = builder.description;
+        this.available = builder.available;
+        this.deleted = builder.deleted;
+    }
 
-		public String getNameRoom() {
-			return nameRoom;
-		}
+    public Long getId() {
+        return id;
+    }
 
-		public void setNameRoom(String nameRoom) {
-			this.nameRoom = nameRoom;
-		}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-		public Long getCapacity() {
-			return capacity;
-		}
+    public String getNameRoom() {
+        return nameRoom;
+    }
 
-		public void setCapacity(Long capacity) {
-			this.capacity = capacity;
-		}
+    public void setNameRoom(String nameRoom) {
+        this.nameRoom = nameRoom;
+    }
 
-		public String getLocation() {
-			return location;
-		}
+    public Long getCapacity() {
+        return capacity;
+    }
 
-		public void setLocation(String location) {
-			this.location = location;
-		}
+    public void setCapacity(Long capacity) {
+        this.capacity = capacity;
+    }
 
-		public String getDescription() {
-			return description;
-		}
+    public String getLocation() {
+        return location;
+    }
 
-		public void setDescription(String description) {
-			this.description = description;
-		}
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
-		public boolean getIsDeleted() {
-			return isDeleted;
-		}
+    public String getDescription() {
+        return description;
+    }
 
-		public void setIsDeleted(boolean isDeleted) {
-			this.isDeleted = isDeleted;
-		}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-		// ==== Builder ====
-		public static class Builder {
-			private Long id;
-			private String nameRoom;
-			private Long capacity;
-			private String location;
-			private String description;
-			private boolean isDeleted;
+    public Boolean getAvailable() {
+        return available;
+    }
 
-			public Builder id(Long id) {
-				this.id = id;
-				return this;
-			}
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
 
-			public Builder nameRoom(String nameRoom) {
-				this.nameRoom = nameRoom;
-				return this;
-			}
+    public Boolean getIsDeleted() {
+        return deleted;
+    }
 
-			public Builder capacity(Long capacity) {
-				this.capacity = capacity;
-				return this;
-			}
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
-			public Builder location(String location) {
-				this.location = location;
-				return this;
-			}
+    public static class Builder {
+        private Long id;
+        private String nameRoom;
+        private Long capacity;
+        private String location;
+        private String description;
+        private Boolean available = true;
+        private Boolean deleted = false;
 
-			public Builder description(String description) {
-				this.description = description;
-				return this;
-			}
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
-			public Builder isDeleted(boolean isDeleted) {
-				this.isDeleted = isDeleted;
-				return this;
-			}
+        public Builder nameRoom(String nameRoom) {
+            this.nameRoom = nameRoom;
+            return this;
+        }
 
-			public Room build() {
-				return new Room(this);
-			}
-		}
+        public Builder capacity(Long capacity) {
+            this.capacity = capacity;
+            return this;
+        }
+
+        public Builder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder available(Boolean available) {
+            this.available = available;
+            return this;
+        }
+
+        public Builder deleted(Boolean deleted) {
+            this.deleted = deleted;
+            return this;
+        }
+
+        public Room build() {
+            return new Room(this);
+        }
+    }
 }

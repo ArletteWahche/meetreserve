@@ -7,7 +7,8 @@ public class RoomResponse {
     private Long capacity;
     private String location;
     private String description;
-    private boolean isDeleted;
+    private Boolean available;
+    private Boolean isDeleted;
 
     // Constructeur privé utilisé par le Builder
     private RoomResponse(Builder builder) {
@@ -16,6 +17,7 @@ public class RoomResponse {
         this.capacity = builder.capacity;
         this.location = builder.location;
         this.description = builder.description;
+        this.available = builder.available;
         this.isDeleted = builder.isDeleted;
     }
 
@@ -58,6 +60,14 @@ public class RoomResponse {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -74,7 +84,8 @@ public class RoomResponse {
         private Long capacity;
         private String location;
         private String description;
-        private boolean isDeleted;
+        private Boolean available;
+        private Boolean isDeleted;
 
         public Builder id(Long id) {
             this.id = id;
@@ -98,6 +109,11 @@ public class RoomResponse {
 
         public Builder description(String description) {
             this.description = description;
+            return this;
+        }
+        
+        public Builder available(Boolean available) {
+            this.available = available;
             return this;
         }
 

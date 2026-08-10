@@ -10,9 +10,12 @@
 	<link rel="stylesheet" href="css/login.css" />
 </head>
 <body>
+	
 	<div class="logo-container">
 		<img src="${pageContext.request.contextPath}/images/Log2.png" alt="Logo" class="logo">
 	</div>
+	
+	
 	<div class="login-container">
 		<h2>Login</h2>
 		

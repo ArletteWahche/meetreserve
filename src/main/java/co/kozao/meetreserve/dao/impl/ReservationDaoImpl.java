@@ -1,6 +1,7 @@
 package co.kozao.meetreserve.dao.impl;
 
 import co.kozao.meetreserve.dao.database.DatabaseConnection;
+
 import co.kozao.meetreserve.dao.query.ReservationSqlQueries;
 import co.kozao.meetreserve.dao.service.ReservationDao;
 import co.kozao.meetreserve.model.Reservation;
@@ -34,8 +35,18 @@ public class ReservationDaoImpl implements ReservationDao {
             ps.setString(7, reservation.getStatus().name());
             ps.setDate(8, (Date) reservation.getCreatedAt());
 
-            Long reservationId = (long) ps.executeUpdate();
-            reservation.setId(reservationId);
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                return null;
+            }
+
+            // On récupère le vrai id généré par PostgreSQL, pas le nombre de lignes affectées
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    reservation.setId(generatedKeys.getLong(1));
+                }
+            }
+
 
             return reservation;
 
@@ -45,7 +56,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public Reservation update(long reservationId, Reservation reservation) {
+    public Reservation update(Long reservationId, Reservation reservation) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_UPDATE_RESERVATION);
@@ -67,7 +78,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public boolean delete(long reservationId) {
+    public boolean delete(Long reservationId) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_DELETE_RESERVATION);
@@ -80,7 +91,7 @@ public class ReservationDaoImpl implements ReservationDao {
         return false;
     }
 
-    public Reservation findById(long id) {
+    public Reservation findById(Long id) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_FIND_BY_ID);
@@ -116,7 +127,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     //  méthode pour chercher par userId  change le nom pour éviter les conflits avec findById
-    public List<Reservation> findByUserId(long userId) {
+    public List<Reservation> findByUserId(Long userId) {
 
         try {
             PreparedStatement ps = DatabaseConnection.getInstance()
@@ -137,7 +148,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public Reservation updateStatus(long reservationId, ReservationStatus status) {
+    public Reservation updateStatus(Long reservationId, ReservationStatus status) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_UPDATE_STATUS);
@@ -168,4 +179,5 @@ public class ReservationDaoImpl implements ReservationDao {
                 .createdAt(rs.getDate("created_at"))
                 .build();
     }
+
 }

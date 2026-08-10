@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDAO {
 					.prepareStatement(UserSqlQueries.SQL_EXISTS_BY_EMAIL);
 			ps.setString(1, email);
 			ResultSet rs = ps.executeQuery();
-			return rs.hashCode() > 0;
+			return rs.next() ;
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "An error occurred while verifying the email.", e);
 		}

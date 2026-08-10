@@ -1,6 +1,7 @@
 package co.kozao.meetreserve.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import co.kozao.meetreserve.dao.impl.RoomDaoImpl;
 import co.kozao.meetreserve.mapper.RoomMapper;
@@ -56,7 +57,14 @@ public class RoomService {
     public List<RoomResponse> getAllRooms() {
         return roomDaoImpl.findAll().stream()
                 .map(roomMapper::mapToResponse)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
+    
+    public List<RoomResponse> getAvailableRooms() {
+        return roomDaoImpl.findAvailable().stream()
+                .map(roomMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    
 
 }

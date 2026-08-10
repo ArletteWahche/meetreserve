@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface ReservationDao {
     Reservation insert(Reservation reservation);
-    Reservation update(long reservationId, Reservation reservation);
-    boolean delete(long reservationId);
-    Reservation findById(long id);
+    Reservation update(Long reservationId, Reservation reservation);
+    boolean delete(Long reservationId);
+    Reservation findById(Long id);
     List<Reservation> findAll();
-    List<Reservation> findByUserId(long userId);
-    Reservation updateStatus(long reservationId, ReservationStatus status);
+    List<Reservation> findByUserId(Long userId);
+    Reservation updateStatus(Long reservationId, ReservationStatus status);
 }

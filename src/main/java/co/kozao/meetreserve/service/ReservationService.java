@@ -1,11 +1,14 @@
 package co.kozao.meetreserve.service;
 
 import co.kozao.meetreserve.dao.impl.ReservationDaoImpl;
+
 import co.kozao.meetreserve.mapper.ReservationMapper;
 import co.kozao.meetreserve.model.Reservation;
+import co.kozao.meetreserve.model.ReservationStatus;
 import co.kozao.meetreserve.web.dto.response.ReservationResponse;
 import co.kozao.meetreserve.web.dto.resquest.ReservationRequest;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -23,13 +26,35 @@ public class ReservationService {
     }
 
     public ReservationResponse addReservation(ReservationRequest request) {
-        // Implement the logic to add a reservation using the reservationDao
-        // Convert ReservationRequest to Reservation model, call reservationDao.insert(), and return a ReservationResponse
-        return null; // Placeholder for actual implementation
-
+        
+    	if(request == null) {
+    		throw new IllegalArgumentException("Reservation request is required");
+    	}
+    	Reservation reservation = reservationMapper.toReservation(request);
+    	
+    	reservation.setStatus(ReservationStatus.PENDING);
+    	
+    	reservation.setCreatedAt(new Date(System.currentTimeMillis()));
+    	
+    	Reservation created = reservationDao.insert(reservation);
+    	if(created == null) {
+    		return null; // Placeholder for actual implementation
+    	}
+    	
+    	return reservationMapper.toReservationResponse(created);
+    }
+    
+    public ReservationResponse getReservationById(Long id) {
+    	Reservation reservation = reservationDao.findById(id);
+    	return reservation != null ? reservationMapper.toReservationResponse(reservation) : null;
+    }
+    
+    public ReservationResponse cancelReservation(Long id) {
+    	Reservation cancelled = reservationDao.updateStatus(id, ReservationStatus.CANCELLED);
+    	return cancelled != null ? reservationMapper.toReservationResponse(cancelled) : null;
     }
 
-    public List<ReservationResponse> getReservationByUserId(long userId) {
+    public List<ReservationResponse> getReservationByUserId(Long userId) {
         List<Reservation> userReservation = reservationDao.findByUserId(userId);
         return userReservation.stream()
                 .map(reservationMapper::toReservationResponse)
