@@ -4,6 +4,7 @@ import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.service.UserService;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
 
+import co.kozao.meetreserve.web.dto.resquest.UserRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -14,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@WebServlet("/login")
+@WebServlet({"/", "/login"})
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(LoginServlet.class.getName());
@@ -24,6 +25,17 @@ public class LoginServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         this.userService = new UserService();
+        boolean exists = this.userService.emailExists("admin@gmail.com");
+        if (!exists) {
+            UserRequest adminUser = new UserRequest.Builder()
+                    .name("Admin")
+                    .surname("Admin")
+                    .email("admin@gmail.com")
+                    .password("admin")
+                    .role("ADMINISTRATOR")
+                    .build();
+            userService.register(adminUser);
+        }
     }
 
     @Override
