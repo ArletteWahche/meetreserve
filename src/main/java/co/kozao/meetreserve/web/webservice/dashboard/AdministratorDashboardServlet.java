@@ -30,4 +30,6 @@ public class AdministratorDashboardServlet extends HttpServlet {
         request.setAttribute("roles", roles);
         request.getRequestDispatcher("/administrator/dashboard.jsp").forward(request, response);
     }
+    
+    //bon ca va le probleme a ete regler, bon je dois ressortir la vue adminnistrateur et manageur mais j'ai fais un truc au debut qui etaais de mettre 
 }

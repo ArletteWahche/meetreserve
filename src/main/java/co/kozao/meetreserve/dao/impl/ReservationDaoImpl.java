@@ -2,6 +2,7 @@ package co.kozao.meetreserve.dao.impl;
 
 import co.kozao.meetreserve.dao.database.DatabaseConnection;
 
+
 import co.kozao.meetreserve.dao.query.ReservationSqlQueries;
 import co.kozao.meetreserve.dao.service.ReservationDao;
 import co.kozao.meetreserve.model.Reservation;
@@ -11,6 +12,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,7 +80,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public boolean delete(Long reservationId) {
+    public Boolean delete(Long reservationId) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_DELETE_RESERVATION);
@@ -161,9 +163,30 @@ public class ReservationDaoImpl implements ReservationDao {
                 return mapRowToReservation(rs);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error while retrieving reservation by id.", e);
+            logger.log(Level.SEVERE, "Error while updating reservation status.", e);
         }
         return null;
+    }
+    
+    @Override
+    public Boolean hasConflict(Long roomId, Date reservationDate, Time startTime, Time endTime) {
+    	try {
+    		PreparedStatement ps = DatabaseConnection.getInstance()
+    				.prepareStatement(ReservationSqlQueries.SQL_CHECK_CONFLICT);
+    		
+    		ps.setLong(1, roomId);
+    		ps.setDate(2, new Date(reservationDate.getTime()));
+    		ps.setTime(3, endTime);
+    		ps.setTime(4, startTime);
+    		
+    		ResultSet rs = ps.executeQuery();
+    		if(rs.next()) {
+    			return rs.getInt(1) > 0;
+    		}
+    	}catch (SQLException e) {
+    		logger.log(Level.SEVERE, "Error while checking reservation conflict.", e);
+    	}
+    	return false;
     }
 
     private Reservation mapRowToReservation(ResultSet rs) throws SQLException {
@@ -180,4 +203,5 @@ public class ReservationDaoImpl implements ReservationDao {
                 .build();
     }
 
+	
 }

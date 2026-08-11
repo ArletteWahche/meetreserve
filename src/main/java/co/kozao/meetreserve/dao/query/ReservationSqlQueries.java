@@ -20,20 +20,29 @@ public class ReservationSqlQueries {
 					+ "WHERE id_reservation = ?";
 
 	public static final String SQL_FIND_BY_ID =
-			"SELECT id_reservation, id_user, id_room, reservation_date, start_time, end_time, status, created_at "
-			+ "FROM reservations "
-			+ "WHERE id_reservation = ?";
+	        "SELECT id_reservation, id_user, id_room, reservation_date, "
+	        + "start_time, end_time, subject, status, created_at, deleted "
+	        + "FROM reservations "
+	        + "WHERE id_reservation = ? AND deleted = false";
 
 	public static final String SQL_FIND_ALL =
-			"SELECT id_reservation, id_user, id_room, reservation_date, start_time, end_time, status, created_at "
-			+ "FROM reservations";
+	        "SELECT id_reservation, id_user, id_room, reservation_date, "
+	        + "start_time, end_time, subject, status, created_at, deleted "
+	        + "FROM reservations "
+	        + "WHERE deleted = false";
 
 	public static final String SQL_FIND_BY_USER_ID =
-			"SELECT id_reservation, id_user, id_room, reservation_date, start_time, end_time, status, created_at "
-			+ "FROM reservations WHERE id_user = ?";
+	        "SELECT id_reservation, id_user, id_room, reservation_date, "
+	        + "start_time, end_time, subject, status, created_at, deleted "
+	        + "FROM reservations "
+	        + "WHERE id_user = ? AND deleted = false";
 
 	public static final String SQL_UPDATE_STATUS =
-			"UPDATE reservations SET status = ? WHERE id_reservation = ?";
+	        "UPDATE reservations "
+	        + "SET status = ? "
+	        + "WHERE id_reservation = ? AND deleted = false "
+	        + "RETURNING id_reservation, id_user, id_room, reservation_date, "
+	        + "start_time, end_time, subject, status, created_at, deleted";
 
 	// Un conflit existe si une réservation active (non annulée) sur la même salle
 	// chevauche l'intervalle demandé : existing.start < new.end AND existing.end > new.start

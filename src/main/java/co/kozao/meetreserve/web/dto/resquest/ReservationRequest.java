@@ -68,7 +68,7 @@ public class ReservationRequest {
         this.roomId = roomId;
     }
 
-    public class Builder {
+    public static class Builder {
         private Long userId;
         private Long roomId;
         private Date reservationDate;

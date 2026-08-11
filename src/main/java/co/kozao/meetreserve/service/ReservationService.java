@@ -27,9 +27,18 @@ public class ReservationService {
 
     public ReservationResponse addReservation(ReservationRequest request) {
         
-    	if(request == null) {
-    		throw new IllegalArgumentException("Reservation request is required");
+    	boolean hasInvalidTimeRange =
+    	        request.getStartTime() == null
+    	        || request.getEndTime() == null
+    	        || !request.getStartTime()
+    	                .before(request.getEndTime());
+
+    	if (hasInvalidTimeRange) {
+    	    throw new IllegalArgumentException(
+    	            "Start time must be before end time."
+    	    );
     	}
+    	
     	Reservation reservation = reservationMapper.toReservation(request);
     	
     	reservation.setStatus(ReservationStatus.PENDING);
