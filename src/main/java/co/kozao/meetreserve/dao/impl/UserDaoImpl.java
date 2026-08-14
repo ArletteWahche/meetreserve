@@ -10,6 +10,9 @@ import co.kozao.meetreserve.web.dto.resquest.UserRequest;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,7 +20,26 @@ public class UserDaoImpl implements UserDAO {
 
 	private static final Logger logger = Logger.getLogger(UserDaoImpl.class.getName());
 
-	public boolean existsByEmail(String email) {
+	public Boolean insert(User user) {
+		try{
+			PreparedStatement ps = DatabaseConnection.getInstance()
+					.prepareStatement(UserSqlQueries.SQL_INSERT_USER);
+
+			ps.setString(1, user.getName());
+			ps.setString(2, user.getSurname());
+			ps.setString(3, user.getEmail());
+			ps.setString(4, user.getPassword());
+			ps.setString(5, user.getRole().name());
+
+			return ps.executeUpdate() > 0;
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Error while inserting the user.", e);
+		}
+		return false;
+	}
+	
+	
+	public Boolean existsByEmail(String email) {
 		try {
 			PreparedStatement ps = DatabaseConnection.getInstance()
 					.prepareStatement(UserSqlQueries.SQL_EXISTS_BY_EMAIL);
@@ -52,24 +74,29 @@ public class UserDaoImpl implements UserDAO {
 	    return null;
 	}
 
-	public boolean insert(User user) {
-		try{
+	public List<User> findAll(){
+		try {
 			PreparedStatement ps = DatabaseConnection.getInstance()
-					.prepareStatement(UserSqlQueries.SQL_INSERT_USER);
-
-			ps.setString(1, user.getName());
-			ps.setString(2, user.getSurname());
-			ps.setString(3, user.getEmail());
-			ps.setString(4, user.getPassword());
-			ps.setString(5, user.getRole().name());
-
-			return ps.executeUpdate() > 0;
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Error while inserting the user.", e);
+					.prepareStatement(UserSqlQueries.SQL_FIND_ALL);
+			ResultSet rs = ps.executeQuery();
+			
+			List<User> users = new ArrayList<>();
+			while(rs.next()) {
+				users.add(new User.Builder()
+						.id(rs.getLong("id_user"))
+						.name(rs.getString("name"))
+						.surname(rs.getString("surname"))
+						.email(rs.getString("email"))
+						.password(rs.getString("passsword"))
+						.role(Role.valueOf(rs.getString("role")))
+						.build());
+			}
+			return users;
+		} catch(SQLException e) {
+			logger.log(Level.SEVERE, "Error while retrievving users.", e);
 		}
-		return false;
+		return Collections.emptyList();
 	}
-
 
 	@Override
 	public User updateUser(UserRequest request) {
@@ -77,7 +104,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public boolean deleteUser(String email) {
+	public Boolean deleteUser(String email) {
 		return false;
 	}
 }

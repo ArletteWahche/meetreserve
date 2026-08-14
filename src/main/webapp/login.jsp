@@ -7,7 +7,7 @@
 	<title>MeetReserve Connection</title>
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/fontawesome.min.css" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/solid.min.css" />
-	<link rel="stylesheet" href="css/login.css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
 </head>
 <body>
 	

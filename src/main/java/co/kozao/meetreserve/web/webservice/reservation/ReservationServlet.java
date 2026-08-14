@@ -190,7 +190,7 @@ public class ReservationServlet extends HttpServlet {
      * Un utilisateur peut annuler sa propre réservation.
      * Un manager ou un administrateur peut annuler celles des autres.
      */
-    private boolean canAccess(UserResponse user, ReservationResponse reservation) {
+    private Boolean canAccess(UserResponse user, ReservationResponse reservation) {
         if (reservation.getUserId() != null && reservation.getUserId().equals(user.getId())) {
             return true;
         }

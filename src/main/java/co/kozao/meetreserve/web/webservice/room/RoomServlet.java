@@ -25,6 +25,8 @@ public class RoomServlet extends HttpServlet {
 
     private RoomService roomService;
 
+	
+
     @Override
     public void init() throws ServletException {
         this.roomService = new RoomService();
@@ -162,8 +164,19 @@ public class RoomServlet extends HttpServlet {
     }
 
     private RoomRequest buildRequestFromParams(HttpServletRequest request) {
+        String roomName = request.getParameter("roomName");
         String capacityParam = request.getParameter("capacity");
+        String location = request.getParameter("location");
+        String description = request.getParameter("description");
         String availableParam = request.getParameter("available");
+
+        if (roomName == null || roomName.isBlank()) {
+            throw new IllegalArgumentException("Room name is required.");
+        }
+
+        if (capacityParam == null || capacityParam.isBlank()) {
+            throw new IllegalArgumentException("Capacity is required.");
+        }
 
         Long capacity;
         try {
@@ -172,11 +185,19 @@ public class RoomServlet extends HttpServlet {
             throw new IllegalArgumentException("Capacity must be a valid number.");
         }
 
+        if (capacity <= 0) {
+            throw new IllegalArgumentException("Capacity must be greater than zero.");
+        }
+
+        if (location == null || location.isBlank()) {
+            throw new IllegalArgumentException("Location is required.");
+        }
+
         return new RoomRequest.Builder()
-                .nameRoom(request.getParameter("nameRoom"))
+                .roomName(roomName.trim())
                 .capacity(capacity)
-                .location(request.getParameter("location"))
-                .description(request.getParameter("description"))
+                .location(location.trim())
+                .description(description == null ? null : description.trim())
                 .available(availableParam == null || Boolean.parseBoolean(availableParam))
                 .build();
     }
@@ -186,7 +207,7 @@ public class RoomServlet extends HttpServlet {
         if (session == null) {
             return false;
         }
-        Object userObj = session.getAttribute("userConnected");
+        Object userObj = session.getAttribute("userConnected", user);
         if (!(userObj instanceof UserResponse user)) {
             return false;
         }

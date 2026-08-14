@@ -13,7 +13,7 @@ public class RoomMapper {
 
     public Room mapToEntity(RoomRequest request) {
         return new Room.Builder()
-                .nameRoom(request.getNameRoom())
+                .roomName(request.getRoomName())
                 .capacity(request.getCapacity())
                 .location(request.getLocation())
                 .description(request.getDescription())
@@ -24,10 +24,9 @@ public class RoomMapper {
     public RoomResponse mapToResponse(Room room) {
         return new RoomResponse.Builder()
                 .id(room.getId())
-                .nameRoom(room.getNameRoom())
+                .roomName(room.getRoomName())
                 .capacity(room.getCapacity())
                 .location(room.getLocation())
-                .description(room.getDescription())
                 .description(room.getDescription())
                 .available(room.getAvailable())
                 .isDeleted(room.getIsDeleted())

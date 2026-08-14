@@ -1,12 +1,15 @@
 package co.kozao.meetreserve.dao.service;
 
+import java.util.List;
+
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.web.dto.resquest.UserRequest;
 
 public interface UserDAO {
-    boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
     User findByEmail(String email);
-    boolean insert(User user);
+    Boolean insert(User user);
     User updateUser(UserRequest request);
-    boolean deleteUser(String email);
+    Boolean deleteUser(String email);
+    List<User> findAll();
 }

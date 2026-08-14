@@ -8,7 +8,7 @@ public interface RoomDAO {
 
     Room insert(Room request);
     Room update(Room request);
-    Boolean delete(Room request);
+    Boolean deleted(Room request);
     Boolean available(Room request);
     Room findById(Long id);
     List<Room> findAll();

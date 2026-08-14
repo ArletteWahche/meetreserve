@@ -16,12 +16,17 @@ public class ReservationMapper {
                 .subject(request.getSubject())
                 .build();
     }
-
+    
     public ReservationResponse toReservationResponse(Reservation reservation) {
+    	return toReservationResponse(reservation);
+    }
+
+    public ReservationResponse toReservationResponse(Reservation reservation, String roomName) {
         return new ReservationResponse.Builder()
                 .id(reservation.getId())
                 .userId(reservation.getUserId())
                 .roomId(reservation.getRoomId())
+                .roomName(roomName)
                 .reservationDate(reservation.getReservationDate())
                 .startTime(reservation.getStartTime())
                 .endTime(reservation.getEndTime())

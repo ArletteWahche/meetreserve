@@ -10,7 +10,7 @@ body{
         margin: 0;
 	}
 	.login-container{
-		background-color: rgba(139, 69, 19, 0.8);
+		background-color: rgba(30, 47, 82, 0.8);
         padding: 30px;
         border-radius: 30px;
         box-shadow: 1px 5px 25px;
@@ -71,14 +71,14 @@ body{
         border: none;
         border-radius: 20px;
         border: none;
-        background-color: #2c7be5;
+        background-color: #EF6C00;
         color: white;
         font-size: 16px;
         cursor: pointer;
    }
 
    button:hover {
-        background-color: #1b5fcc;
+        background-color: #EF6C00;
    }
 
    .error {

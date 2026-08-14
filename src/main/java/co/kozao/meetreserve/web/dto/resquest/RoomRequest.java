@@ -2,7 +2,7 @@ package co.kozao.meetreserve.web.dto.resquest;
 
 public class RoomRequest {
 
-    private String nameRoom;
+    private String roomName;
     private Long capacity;
     private String location;
     private String description;
@@ -10,19 +10,19 @@ public class RoomRequest {
 
     // Constructeur privé utilisé par le Builder
     public RoomRequest(Builder builder) {
-        this.nameRoom = builder.nameRoom;
+        this.roomName = builder.roomName;
         this.capacity = builder.capacity;
         this.location = builder.location;
         this.description = builder.description;
         this.available = builder.available;
     }
 
-    public String getNameRoom() {
-        return nameRoom;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setNameRoom(String nameRoom) {
-        this.nameRoom = nameRoom;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Long getCapacity() {
@@ -60,14 +60,14 @@ public class RoomRequest {
 
     // ==== Builder ====
     public static class Builder {
-        private String nameRoom;
+        private String roomName;
         private Long capacity;
         private String location;
         private String description;
         private Boolean available;
 
-        public Builder nameRoom(String nameRoom) {
-            this.nameRoom = nameRoom;
+        public Builder roomName(String roomName) {
+            this.roomName = roomName;
             return this;
         }
 

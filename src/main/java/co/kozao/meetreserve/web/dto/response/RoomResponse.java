@@ -3,7 +3,7 @@ package co.kozao.meetreserve.web.dto.response;
 public class RoomResponse {
 
     private Long id;
-    private String nameRoom;
+    private String roomName;
     private Long capacity;
     private String location;
     private String description;
@@ -13,7 +13,7 @@ public class RoomResponse {
     // Constructeur privé utilisé par le Builder
     private RoomResponse(Builder builder) {
         this.id = builder.id;
-        this.nameRoom = builder.nameRoom;
+        this.roomName = builder.roomName;
         this.capacity = builder.capacity;
         this.location = builder.location;
         this.description = builder.description;
@@ -29,12 +29,12 @@ public class RoomResponse {
         this.id = id;
     }
 
-    public String getNameRoom() {
-        return nameRoom;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setNameRoom(String nameRoom) {
-        this.nameRoom = nameRoom;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Long getCapacity() {
@@ -80,7 +80,7 @@ public class RoomResponse {
     // ==== Builder ====
     public static class Builder {
         private Long id;
-        private String nameRoom;
+        private String roomName;
         private Long capacity;
         private String location;
         private String description;
@@ -92,8 +92,8 @@ public class RoomResponse {
             return this;
         }
 
-        public Builder nameRoom(String nameRoom) {
-            this.nameRoom = nameRoom;
+        public Builder roomName(String roomName) {
+            this.roomName = roomName;
             return this;
         }
 

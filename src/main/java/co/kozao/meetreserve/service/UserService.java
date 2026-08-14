@@ -1,11 +1,16 @@
 package co.kozao.meetreserve.service;
 
 import co.kozao.meetreserve.dao.impl.UserDaoImpl;
+
 import co.kozao.meetreserve.mapper.UserMapper;
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
 import co.kozao.meetreserve.web.dto.resquest.UserRequest;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UserService {
@@ -26,11 +31,11 @@ public class UserService {
         return null;
     }
 
-    public boolean emailExists(String email) {
+    public Boolean emailExists(String email) {
         return userDao.existsByEmail(email);
     }
 
-    public boolean register(UserRequest user) {
+    public Boolean register(UserRequest user) {
         if (emailExists(user.getEmail())) {
             return false;
         }
@@ -41,6 +46,25 @@ public class UserService {
         userToInsert.setRole(Role.EMPLOYEE);
 
         return userDao.insert(userToInsert);
+    }
+    
+    public Boolean registerByAdmin(UserRequest user, Role role) {
+    	if(emailExists(user.getEmail())) {
+    		return false;
+    	}
+    	
+    	String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+    	User userToInsert = mapper.mapToEntity(user);
+    	userToInsert.setPassword(hashedPassword);
+    	userToInsert.setRole(role);
+    	return userDao.insert(userToInsert);
+
+    }
+    
+    public List<UserResponse> getAllUsers(){
+    	return userDao.findAll().stream()
+    			.map(mapper::toResponse)
+    			.collect(Collectors.toList());
     }
 
     public ValidationResult validateRegistration(String name, String surname, String email, String password) {

@@ -39,6 +39,10 @@
 			    </span>
 			</div>
 			
+			<label for="role">Role</label>
+			<input type="radio" id="role" name="role" >Manager
+			<input type="radio" id="role" name="role" >Employee
+			
 			<button type="submit">Register</button>
 		</form>
 		

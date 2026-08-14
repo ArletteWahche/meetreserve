@@ -46,7 +46,7 @@ public class RoomService {
             throw new IllegalArgumentException("Room not found");
         }
 
-        return roomDaoImpl.delete(existingRoom);
+        return roomDaoImpl.deleted(existingRoom);
     }
 
     public RoomResponse getRoomById(long id) {

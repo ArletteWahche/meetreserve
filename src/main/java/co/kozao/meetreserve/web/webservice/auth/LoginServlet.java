@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@WebServlet({"/", "/login"})
+@WebServlet( "/login")
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(LoginServlet.class.getName());
@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
                     .password("admin")
                     .role("ADMINISTRATOR")
                     .build();
-            userService.register(adminUser);
+            userService.registerByAdmin(adminUser, Role.ADMINISTRATOR);
         }
     }
 
@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
             String errorMessage = "Login or password is Empty";
             LOG.info(String.format("Login: %s or password: %s is Empty", email, password));
             response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
-            return; // ✅ on arrête ici
+            return; 
         }
 
         try {
@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
                 String errorMessage = "Invalid credential";
                 LOG.info(String.format("Invalid credential. Login: %s password: %s", email, password));
                 response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
-                return; // ✅ LE RETURN QUI MANQUAIT — c'était la cause du bug
+                return; 
             }
 
             HttpSession session = request.getSession(true);
@@ -71,27 +71,25 @@ public class LoginServlet extends HttpServlet {
 
             switch (role) {
                 case EMPLOYEE:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/employee");
+                    response.sendRedirect(request.getContextPath() + "/dashboard/employee");
                     break;
                 case MANAGER:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/manager");
+                    response.sendRedirect(request.getContextPath() + "/dashboard/manager");
                     break;
                 case ADMINISTRATOR:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/administrator");
+                    response.sendRedirect(request.getContextPath() + "/dashboard/administrator");
                     break;
                 default:
                     String errorMessage = "User don't have a right role";
                     response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
                     break;
             }
-            // pas besoin de return ici, c'est la fin naturelle du try
+            
 
         } catch (Exception e) {
             LOG.warning(String.format("error: %s", e.getMessage()));
 
-            // Si la réponse a déjà été envoyée (un sendRedirect a eu lieu avant
-            // l'exception), impossible de faire un forward — on ne peut plus
-            // rien envoyer au client, donc on se contente de logguer.
+         
             if (!response.isCommitted()) {
                 request.setAttribute("error", "An error occurred. Please try again.");
                 request.getRequestDispatcher("/login.jsp").forward(request, response);

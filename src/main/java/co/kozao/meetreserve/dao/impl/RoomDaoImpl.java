@@ -24,7 +24,7 @@ public class RoomDaoImpl implements RoomDAO {
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(RoomSqlQueries.SQL_INSERT_ROOM);
 
-            ps.setString(1, request.getNameRoom());
+            ps.setString(1, request.getRoomName());
             ps.setLong(2, request.getCapacity());
             ps.setString(3, request.getLocation());
             ps.setString(4, request.getDescription());
@@ -46,7 +46,7 @@ public class RoomDaoImpl implements RoomDAO {
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(RoomSqlQueries.SQL_UPDATE_ROOM);
 
-            ps.setString(1, request.getNameRoom());
+            ps.setString(1, request.getRoomName());
             ps.setLong(2, request.getCapacity());
             ps.setString(3, request.getLocation());
             ps.setString(4, request.getDescription());
@@ -62,7 +62,7 @@ public class RoomDaoImpl implements RoomDAO {
     }
 
     @Override
-    public Boolean delete(Room request) {
+    public Boolean deleted(Room request) {
         try {
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(RoomSqlQueries.SQL_DELETE_ROOM);
@@ -151,7 +151,7 @@ public class RoomDaoImpl implements RoomDAO {
     private Room mapRowToRoom(ResultSet rs) throws SQLException {
         return new Room.Builder()
                 .id(rs.getLong("id_room"))
-                .nameRoom(rs.getString("name_room"))
+                .roomName(rs.getString("name_room"))
                 .capacity(rs.getLong("capacity"))
                 .location(rs.getString("location"))
                 .description(rs.getString("description"))

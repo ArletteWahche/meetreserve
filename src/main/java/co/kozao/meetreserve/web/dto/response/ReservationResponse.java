@@ -11,6 +11,7 @@ public class ReservationResponse {
     private Long id;
     private Long userId;
     private Long roomId;
+    private String roomName;
     private Date reservationDate;
     private Time startTime;
     private Time endTime;
@@ -24,6 +25,7 @@ public class ReservationResponse {
         this.id = builder.id;
         this.userId = builder.userId;
         this.roomId = builder.roomId;
+        this.roomName = builder.roomName;
         this.reservationDate = builder.reservationDate;
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
@@ -47,6 +49,14 @@ public class ReservationResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+    
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Date getReservationDate() {
@@ -115,6 +125,7 @@ public class ReservationResponse {
         private Long id;
         private Long userId;
         private Long roomId;
+        private String roomName; 
         private Date reservationDate;
         private Time startTime;
         private Time endTime;
@@ -135,6 +146,11 @@ public class ReservationResponse {
 
         public ReservationResponse.Builder roomId(Long roomId) {
             this.roomId = roomId;
+            return this;
+        }
+        
+        public ReservationResponse.Builder roomName(String roomName) {
+            this.roomName = roomName;
             return this;
         }
 
