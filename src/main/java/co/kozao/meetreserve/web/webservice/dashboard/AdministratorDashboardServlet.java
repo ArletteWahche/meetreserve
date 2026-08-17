@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import co.kozao.meetreserve.model.Role;
+import co.kozao.meetreserve.service.ReservationService;
 import co.kozao.meetreserve.service.RoomService;
 import co.kozao.meetreserve.service.UserService;
+import co.kozao.meetreserve.web.dto.response.ReservationResponse;
 import co.kozao.meetreserve.web.dto.response.RoomResponse;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
 import co.kozao.meetreserve.web.dto.resquest.UserRequest;
@@ -23,13 +25,15 @@ public class AdministratorDashboardServlet extends HttpServlet {
 
 	private UserService userService;
 	private RoomService roomService;
+	private ReservationService reservationService;
 	
 	@Override
 	public void init() throws ServletException{
 		this.userService = new UserService();
 		this.roomService = new RoomService();
+		this.reservationService = new ReservationService();
 	}
-	
+		
 	private UserResponse requireAdmin(HttpServletRequest request, HttpServletResponse response)
     		throws IOException {
     	
@@ -63,12 +67,27 @@ public class AdministratorDashboardServlet extends HttpServlet {
     	List<String> roles = Arrays.stream(Role.values()).map(Role::name).toList();
     	List<UserResponse> users = userService.getAllUsers();
     	List<RoomResponse> rooms = roomService.getAllRooms();
-    	
+    	List<ReservationResponse> reservations = reservationService.getReservations();
+
     
+    	long employeeCount = users.stream().filter(u -> "EMPLOYEE".equals(u.getRole())).count();
+        long managerCount = users.stream().filter(u -> "MANAGER".equals(u.getRole())).count();
+        long pendingCount = reservations.stream()
+                .filter(r -> r.getStatus() == co.kozao.meetreserve.model.ReservationStatus.PENDING)
+                .count();
+
+    	
         request.setAttribute("roles", roles);
         request.setAttribute("users", users);
         request.setAttribute("rooms", rooms);
         request.setAttribute("currentUser", currentUser);
+        request.setAttribute("totalUsers", users.size());
+        request.setAttribute("employeeCount", employeeCount);
+        request.setAttribute("managerCount", managerCount);
+        request.setAttribute("totalRooms", rooms.size());
+        request.setAttribute("totalReservations", reservations.size());
+        request.setAttribute("pendingCount", pendingCount);
+
         request.getRequestDispatcher("/administrator/dashboard.jsp").forward(request, response);
     }
     

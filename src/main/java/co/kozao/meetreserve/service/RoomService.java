@@ -25,9 +25,12 @@ public class RoomService {
         }
 
         Room room = roomMapper.mapToEntity(request);
-        room = roomDaoImpl.insert(room);
-
-        return roomMapper.mapToResponse(room);
+        
+        Room created = roomDaoImpl.insert(room);
+        if (created == null) {
+            return null;
+        }
+        return roomMapper.mapToResponse(created);
     }
 
     public RoomResponse updateRoom(long id, RoomRequest request) {
@@ -40,7 +43,7 @@ public class RoomService {
         return roomMapper.mapToResponse(room);
     }
 
-    public boolean deleteRoom(long id) {
+    public Boolean deletedRoom(long id) {
         Room existingRoom = roomDaoImpl.findById(id);
         if (existingRoom == null) {
             throw new IllegalArgumentException("Room not found");

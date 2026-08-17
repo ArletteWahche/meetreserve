@@ -11,27 +11,29 @@ import co.kozao.meetreserve.web.dto.resquest.RoomRequest;
 
 public class RoomMapper {
 
-    public Room mapToEntity(RoomRequest request) {
-        return new Room.Builder()
-                .roomName(request.getRoomName())
-                .capacity(request.getCapacity())
-                .location(request.getLocation())
-                .description(request.getDescription())
-                .available(request.getAvailable())
-                .build();
-    }
+	public Room mapToEntity(RoomRequest request) {
+	    return new Room.Builder()
+	            .roomName(request.getRoomName())
+	            .capacity(request.getCapacity())
+	            .location(request.getLocation())
+	            .description(request.getDescription())
+	            .available(request.getAvailable())
+	            .imageUrl(request.getImageUrl())
+	            .build();
+	}
 
-    public RoomResponse mapToResponse(Room room) {
-        return new RoomResponse.Builder()
-                .id(room.getId())
-                .roomName(room.getRoomName())
-                .capacity(room.getCapacity())
-                .location(room.getLocation())
-                .description(room.getDescription())
-                .available(room.getAvailable())
-                .isDeleted(room.getIsDeleted())
-                .build();
-    }
+	public RoomResponse mapToResponse(Room room) {
+	    return new RoomResponse.Builder()
+	            .id(room.getId())
+	            .roomName(room.getRoomName())
+	            .capacity(room.getCapacity())
+	            .location(room.getLocation())
+	            .description(room.getDescription())
+	            .available(room.getAvailable())
+	            .isDeleted(room.getIsDeleted())
+	            .imageUrl(room.getImageUrl())
+	            .build();
+	}
     
     public List<RoomResponse> mapToResponseList(List<Room> rooms){
     	
@@ -49,6 +51,7 @@ public class RoomMapper {
         room.setLocation(roomRequest.getLocation());
         room.setDescription(roomRequest.getDescription());
         room.setAvailable(roomRequest.getAvailable());
+        room.setImageUrl(roomRequest.getImageUrl());
         return room;
     }
 }

@@ -2,6 +2,7 @@ package co.kozao.meetreserve.web.dto.response;
 
 public class UserResponse {
     private Long id;
+    private Long managerId;
     private String name;
     private String surname;
     private String email;
@@ -9,6 +10,7 @@ public class UserResponse {
 
     public UserResponse(Builder builder) {
         this.id = builder.id;
+        this.managerId = builder.managerId;
         this.name = builder.name;
         this.surname = builder.surname;
         this.email = builder.email;
@@ -17,6 +19,7 @@ public class UserResponse {
 
     // Getters
     public Long getId() { return id; }
+    public Long getManagerId() { return managerId; }
     public String getName() { return name; }
     public String getSurname() { return surname; }
     public String getEmail() { return email; }
@@ -24,6 +27,7 @@ public class UserResponse {
 
     // Setters (gardés, car ton DAO/Service les utilisent)
     public void setId(Long id) { this.id = id; }
+    public void setManagerId(Long managerId) { this.managerId = managerId; }
     public void setName(String name) { this.name = name; }
     public void setSurname(String surname) { this.surname = surname; }
     public void setEmail(String email) { this.email = email; }
@@ -31,6 +35,7 @@ public class UserResponse {
 
     public static class Builder {
         private Long id;
+        private Long managerId;
         private String name;
         private String surname;
         private String email;
@@ -38,6 +43,11 @@ public class UserResponse {
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+        
+        public Builder managerId(Long managerId) {
+            this.managerId = managerId;
             return this;
         }
 

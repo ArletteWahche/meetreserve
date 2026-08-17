@@ -17,11 +17,12 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-@WebServlet({"/reservations", "/reservation/new"})
+@WebServlet({"/reservations", "/reservation/new", "/history"})
 public class ReservationServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(ReservationServlet.class.getName());
@@ -44,17 +45,35 @@ public class ReservationServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+        
+        String path = request.getServletPath();
 
         // ---- Formulaire de nouvelle réservation ----
-        if ("/reservation/new".equals(request.getServletPath())) {
+        if ("/reservation/new".equals(path)) {
             List<RoomResponse> rooms = roomService.getAllRooms();
             request.setAttribute("rooms", rooms);
             request.getRequestDispatcher("/reservation-form.jsp").forward(request, response);
             return;
         }
+        
+        //      Historique : reservation dont la date est passee
+        if("/history".equals(path)) {
+        	List<ReservationResponse> all = reservationService.getReservationByUserId(user.getId());
+        	LocalDate today = LocalDate.now();
+        	List<ReservationResponse> past = all.stream()
+        			.filter(r -> r.getReservationDate() != null
+        					&& ((java.sql.Date) r.getReservationDate()).toLocalDate().isBefore(today))
+        			.toList();
+        	
+        	request.setAttribute("user", user);
+        	request.setAttribute("pastReservations", past);
+        	request.getRequestDispatcher("/history.jsp").forward(request, response);
+        	return;
+        }
 
         // ---- Liste de mes réservations ----
         List<ReservationResponse> reservations = reservationService.getReservationByUserId(user.getId());
+        request.setAttribute("user", user);
         request.setAttribute("reservations", reservations);
         request.getRequestDispatcher("/reservations.jsp").forward(request, response);
     }
@@ -71,7 +90,7 @@ public class ReservationServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null || action.isBlank()) {
-            action = "create"; // le formulaire de /reservation/new ne passe pas forcément d'action
+            action = "create"; 
         }
 
         switch (action) {
@@ -186,9 +205,9 @@ public class ReservationServlet extends HttpServlet {
         return (userObj instanceof UserResponse) ? (UserResponse) userObj : null;
     }
 
-    /**
-     * Un utilisateur peut annuler sa propre réservation.
-     * Un manager ou un administrateur peut annuler celles des autres.
+    /*
+      Un utilisateur peut annuler sa propre réservation.
+      Un manager ou un administrateur peut annuler celles des autres.
      */
     private Boolean canAccess(UserResponse user, ReservationResponse reservation) {
         if (reservation.getUserId() != null && reservation.getUserId().equals(user.getId())) {

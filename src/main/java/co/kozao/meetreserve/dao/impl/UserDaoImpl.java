@@ -21,21 +21,41 @@ public class UserDaoImpl implements UserDAO {
 	private static final Logger logger = Logger.getLogger(UserDaoImpl.class.getName());
 
 	public Boolean insert(User user) {
-		try{
-			PreparedStatement ps = DatabaseConnection.getInstance()
-					.prepareStatement(UserSqlQueries.SQL_INSERT_USER);
-
-			ps.setString(1, user.getName());
-			ps.setString(2, user.getSurname());
-			ps.setString(3, user.getEmail());
-			ps.setString(4, user.getPassword());
-			ps.setString(5, user.getRole().name());
-
-			return ps.executeUpdate() > 0;
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Error while inserting the user.", e);
-		}
-		return false;
+	    try{
+	        PreparedStatement ps = DatabaseConnection.getInstance()
+	                .prepareStatement(UserSqlQueries.SQL_INSERT_USER);
+	        ps.setString(1, user.getName());
+	        ps.setString(2, user.getSurname());
+	        ps.setString(3, user.getEmail());
+	        ps.setString(4, user.getPassword());
+	        ps.setString(5, user.getRole().name());
+	        if (user.getManagerId() != null) {
+	            ps.setLong(6, user.getManagerId());
+	        } else {
+	            ps.setNull(6, java.sql.Types.BIGINT);
+	        }
+	        return ps.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        logger.log(Level.SEVERE, "Error while inserting the user.", e);
+	    }
+	    return false;
+	}
+	
+	public List<User> findByManagerId(Long managerId) {
+	    try {
+	        PreparedStatement ps = DatabaseConnection.getInstance()
+	                .prepareStatement(UserSqlQueries.SQL_FIND_BY_MANAGER_ID);
+	        ps.setLong(1, managerId);
+	        ResultSet rs = ps.executeQuery();
+	        List<User> users = new ArrayList<>();
+	        while (rs.next()) {
+	            users.add(mapRow(rs));
+	        }
+	        return users;
+	    } catch (SQLException e) {
+	        logger.log(Level.SEVERE, "Error while retrieving users by manager.", e);
+	    }
+	    return Collections.emptyList();
 	}
 	
 	
@@ -87,7 +107,7 @@ public class UserDaoImpl implements UserDAO {
 						.name(rs.getString("name"))
 						.surname(rs.getString("surname"))
 						.email(rs.getString("email"))
-						.password(rs.getString("passsword"))
+						.password(rs.getString("password"))
 						.role(Role.valueOf(rs.getString("role")))
 						.build());
 			}
@@ -97,14 +117,56 @@ public class UserDaoImpl implements UserDAO {
 		}
 		return Collections.emptyList();
 	}
+	
+	private User mapRow(ResultSet rs) throws SQLException {
+	    Long managerId = rs.getLong("manager_id");
+	    if (rs.wasNull()) managerId = null;
+	    return new User.Builder()
+	            .id(rs.getLong("id_user"))
+	            .name(rs.getString("name"))
+	            .surname(rs.getString("surname"))
+	            .email(rs.getString("email"))
+	            .password(rs.getString("password"))
+	            .role(Role.valueOf(rs.getString("role")))
+	            .managerId(managerId)
+	            .build();
+	}
 
 	@Override
 	public User updateUser(UserRequest request) {
-		return null;
+	    try {
+	        PreparedStatement ps = DatabaseConnection.getInstance()
+	                .prepareStatement(UserSqlQueries.SQL_UPDATE_USER);
+	        ps.setString(1, request.getName());
+	        ps.setString(2, request.getSurname());
+	        ps.setString(3, request.getRole());
+	        if (request.getManagerId() != null) {
+	            ps.setLong(4, request.getManagerId());
+	        } else {
+	            ps.setNull(4, java.sql.Types.BIGINT);
+	        }
+	        ps.setString(5, request.getEmail());
+
+	        int rows = ps.executeUpdate();
+	        return rows > 0 ? findByEmail(request.getEmail()) : null;
+
+	    } catch (SQLException e) {
+	        logger.log(Level.SEVERE, "Error while updating the user.", e);
+	    }
+	    return null;
 	}
 
 	@Override
 	public Boolean deleteUser(String email) {
-		return false;
+	    try {
+	        PreparedStatement ps = DatabaseConnection.getInstance()
+	                .prepareStatement(UserSqlQueries.SQL_DELETE_USER);
+	        ps.setString(1, email);
+	        return ps.executeUpdate() > 0;
+
+	    } catch (SQLException e) {
+	        logger.log(Level.SEVERE, "Error while deleting the user.", e);
+	    }
+	    return false;
 	}
 }

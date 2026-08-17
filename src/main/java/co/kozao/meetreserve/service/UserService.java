@@ -30,6 +30,12 @@ public class UserService {
         }
         return null;
     }
+    
+    public List<UserResponse> getTeamMembers(Long managerId) {
+        return userDao.findByManagerId(managerId).stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
+    }
 
     public Boolean emailExists(String email) {
         return userDao.existsByEmail(email);

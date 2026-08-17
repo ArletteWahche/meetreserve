@@ -1,92 +1,81 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<title>MeetReserve Connection</title>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/fontawesome.min.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in — MeetReserve</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/fontawesome.min.css" />
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/solid.min.css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
-	
-	<div class="logo-container">
-		<img src="${pageContext.request.contextPath}/images/Log2.png" alt="Logo" class="logo">
-	</div>
-	
-	
-	<div class="login-container">
-		<h2>Login</h2>
-		
-		<form action="${pageContext.request.contextPath}/login" method="post">
-			<label for="email">Email</label>
-			<input type="email" id="email" name="email" required>
-			
-			<div class="password-wrapper">
-				<label for="password">Password</label>
-			    <input type="password" id="password" name="password" autocomplete="current-password" required>
-			    <span id="togglePassword" class="toggle-icon">
-			        <i class="fa-solid fa-eye"></i>
-			    </span>
-			</div>
-			
-			<button type="submit">Login</button>
-		</form>
-		
-		<p>Don't have an account? <a href="${pageContext.request.contextPath}/register.jsp">Sign Up</a></p>
-		
-		<% String error = request.getParameter("error");
-			if(error != null){
-				String message;
-				switch (error){
-					case "champsVides":
-						message = "Please fill in the blank spaces";
-						break;
-					case "identifiants":
-						message = "Email or Password not correct";
-						break;
-					case "role":
-						message = "Unknown user role";
-						break;
-					default:
-						message = "An error occured";
-						break;
-				}
-		%>
-		<div class="error"><%= message %></div>
-		<%
-			}
-		%>
-	
-	</div>
-	
-	
-	<script>
-		const inputs = document.querySelectorAll('input');
-		const errorDiv = document.querySelector('.error');
 
-		if (errorDiv) {
-			inputs.forEach(function(input) {
-				input.addEventListener('input', function() {
-					errorDiv.style.display = 'none';
-				});
-			});
-		}
+    <div class="login-wrap">
+        <div class="login-card">
+            <div class="login-mark">MR</div>
+            <div class="login-title">Login</div>
+            <div class="login-sub">Access the MeetReserve room booking area.</div>
+
+            <c:if test="${not empty param.error}">
+                <div class="alert alert-error">${param.error}</div>
+            </c:if>
+
+            <form action="${pageContext.request.contextPath}/login" method="post">
+                <div class="field">
+                    <label for="email">Professional email address</label>
+                    <input type="email" id="email" name="email" placeholder="prenom.nom@kozao.net" required>
+                </div>
+                
+                <div class="field">
+                    <div class="password-wrapper">
+						<label for="password">Password</label>
+					    <input type="password" id="password" name="password" autocomplete="new-password" required>
+					    <span id="togglePassword" class="toggle-icon">
+					        <i class="fa-solid fa-eye"></i>
+					    </span>
+					</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+            </form>
+
+            <div class="login-foot">
+               Don’t have an account yet? Contact your administrator to create one.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+	
+		const message = document.querySelector('.message');
+		const inputs = document.querySelectorAll('input');
+	
+		inputs.forEach(input => {
+		    input.addEventListener('input', function () {
+		        if (message) {
+		            message.textContent = '';
+		        }
+		    });
+		});
 		
 		const togglePassword = document.getElementById('togglePassword');
 	    const passwordInput = document.getElementById('password');
 	    
-	    togglePassword.addEventListener("click", function () {
-	        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
-	        passwordInput.setAttribute("type", type);
+	    togglePassword.addEventListener('click', function () {
+	        const isPassword = passwordInput.type === 'password';
+	        passwordInput.type = isPassword ? 'text' : 'password';
 	        
 	        const icon = this.querySelector('i');
-	        icon.classList.toggle("fa-eye");
-	        icon.classList.toggle("fa-eye-slash");
+	        icon.classList.toggle('fa-eye');
+	        icon.classList.toggle('fa-eye-slash');
 	        
 	    });
 	</script>
+	
 
 </body>
 </html>

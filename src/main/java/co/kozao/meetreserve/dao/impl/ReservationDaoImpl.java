@@ -80,7 +80,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public Boolean delete(Long reservationId) {
+    public Boolean deleted(Long reservationId) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_DELETE_RESERVATION);
@@ -202,6 +202,12 @@ public class ReservationDaoImpl implements ReservationDao {
                 .createdAt(rs.getDate("created_at"))
                 .build();
     }
+
+	@Override
+	public Boolean delete(Long reservationId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	
 }

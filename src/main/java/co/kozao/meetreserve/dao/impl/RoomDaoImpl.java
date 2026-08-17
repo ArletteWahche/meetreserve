@@ -29,7 +29,7 @@ public class RoomDaoImpl implements RoomDAO {
             ps.setString(3, request.getLocation());
             ps.setString(4, request.getDescription());
             ps.setBoolean(5, request.getAvailable());
-           
+            ps.setString(6, request.getImageUrl());
 
             int rows = ps.executeUpdate();
             return rows > 0 ? request : null;
@@ -51,7 +51,8 @@ public class RoomDaoImpl implements RoomDAO {
             ps.setString(3, request.getLocation());
             ps.setString(4, request.getDescription());
             ps.setBoolean(5, request.getAvailable());
-            ps.setLong(6, request.getId());
+            ps.setString(6, request.getImageUrl());
+            ps.setLong(7, request.getId());
 
             return ps.executeUpdate() > 0 ? request : null;
 
@@ -151,12 +152,13 @@ public class RoomDaoImpl implements RoomDAO {
     private Room mapRowToRoom(ResultSet rs) throws SQLException {
         return new Room.Builder()
                 .id(rs.getLong("id_room"))
-                .roomName(rs.getString("name_room"))
+                .roomName(rs.getString("room_name"))
                 .capacity(rs.getLong("capacity"))
                 .location(rs.getString("location"))
                 .description(rs.getString("description"))
                 .available(rs.getBoolean("available"))
                 .deleted(rs.getBoolean("deleted"))
+                .imageUrl(rs.getString("image_url"))
                 .build();
     }
 }

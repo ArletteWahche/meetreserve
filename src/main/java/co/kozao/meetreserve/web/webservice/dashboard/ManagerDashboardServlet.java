@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.model.ReservationStatus;
+import co.kozao.meetreserve.service.NotificationService;
 import co.kozao.meetreserve.service.ReservationService;
 import co.kozao.meetreserve.service.RoomService;
 import co.kozao.meetreserve.web.dto.response.ReservationResponse;
@@ -27,11 +28,13 @@ public class ManagerDashboardServlet extends HttpServlet {
 
     private ReservationService reservationService;
     private RoomService roomService;
+    private NotificationService notificationService;
 
     @Override
     public void init() throws ServletException {
         this.reservationService = new ReservationService();
         this.roomService = new RoomService();
+        this.notificationService = new NotificationService();
     }
 
     @Override
@@ -64,7 +67,7 @@ public class ManagerDashboardServlet extends HttpServlet {
         request.setAttribute("roomNames", roomNames);
         request.setAttribute("pendingCount", pendingCount);
 
-        request.getRequestDispatcher("/manager-dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/manager/dashboard.jsp").forward(request, response);
     }
 
     @Override
@@ -112,7 +115,33 @@ public class ManagerDashboardServlet extends HttpServlet {
             LOG.warning("Could not update reservation status: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/dashboard/manager?error=" + e.getMessage());
         }
+        
+        Long reservationId = Long.parseLong(idParam);
+        ReservationResponse updated;
+
+        switch (action) {
+            case "confirm":
+                updated = reservationService.updateReservationStatus(reservationId, ReservationStatus.CONFIRMED);
+                break;
+            case "cancel":
+                updated = reservationService.updateReservationStatus(reservationId, ReservationStatus.CANCELLED);
+                break;
+            default:
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
+                return;
+        }
+
+        if (updated != null) {
+            String roomName = roomService.getRoomById(updated.getRoomId()) != null
+                    ? roomService.getRoomById(updated.getRoomId()).getRoomName() : null;
+            notificationService.notifyReservationStatusChange(updated, roomName);
+        }
+
+        response.sendRedirect(request.getContextPath() + "/dashboard/manager");
+        
     }
+    
+    
 
     private UserResponse getConnectedUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);

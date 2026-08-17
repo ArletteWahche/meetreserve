@@ -47,14 +47,17 @@
                     <div class="foot-name">${currentUser.name} ${currentUser.surname}</div>
                     <div class="foot-role">Manager</div>
                 </div>
-                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
-                    <button type="submit" class="logout-link" style="background:none;border:none;cursor:pointer;">Logout</button>
-                </form>
             </div>
         </aside>
 
         <main class="main">
-
+			
+				<div class="top-bar">
+	                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
+	                    <button type="submit" class="btn-logout-top" >Logout</button>
+	                </form>
+            	</div>
+			
             <div class="page-head">
                 <div class="eyebrow">Good Morning ${currentUser.name}</div>
                 <h1 class="page-title">Team Reservations</h1>
@@ -106,7 +109,7 @@
                                     <tr>
                                         <td><strong>${roomNames[r.roomId]}</strong></td>
                                         <td><fmt:formatDate value="${r.reservationDate}" pattern="dd/MM/yyyy" /></td>
-                                        <td><fmt:formatDate value="${r.startTime}" pattern="HH:mm" />–<fmt:formatDate value="${r.endTime}" pattern="HH:mm" /></td>
+                                        <td><fmt:formatDate value="${r.startTime}" pattern="HH:mm" /> – <fmt:formatDate value="${r.endTime}" pattern="HH:mm" /></td>
                                         <td>${r.subject}</td>
                                         <td><span class="status-pill ${r.status}">${r.status}</span></td>
                                         <td class="row-actions">

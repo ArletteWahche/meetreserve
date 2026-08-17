@@ -18,7 +18,7 @@ public class ReservationResponse {
     private String subject;
     private ReservationStatus status;
     private Date createdAt;
-    private boolean deleted;
+    private Boolean deleted;
 
 
     private ReservationResponse(Builder builder) {

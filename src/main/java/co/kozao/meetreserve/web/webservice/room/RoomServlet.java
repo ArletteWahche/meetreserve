@@ -24,12 +24,14 @@ public class RoomServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(RoomServlet.class.getName());
 
     private RoomService roomService;
+    
 
 	
 
     @Override
     public void init() throws ServletException {
         this.roomService = new RoomService();
+        
     }
 
     @Override
@@ -130,7 +132,7 @@ public class RoomServlet extends HttpServlet {
         try {
             long roomId = Long.parseLong(idParam);
             RoomRequest roomRequest = buildRequestFromParams(request);
-            RoomResponse updated = roomService.updateRoom(roomId, roomRequest);
+            RoomResponse update = roomService.updateRoom(roomId, roomRequest);
 
             response.sendRedirect(request.getContextPath() + "/rooms?id=" + roomId);
 
@@ -152,7 +154,7 @@ public class RoomServlet extends HttpServlet {
 
         try {
             long roomId = Long.parseLong(idParam);
-            boolean deleted = roomService.deleteRoom(roomId);
+            boolean deleted = roomService.deletedRoom(roomId);
             response.sendRedirect(request.getContextPath() + "/rooms" + (deleted ? "" : "?error=delete_failed"));
 
         } catch (NumberFormatException e) {
@@ -169,6 +171,7 @@ public class RoomServlet extends HttpServlet {
         String location = request.getParameter("location");
         String description = request.getParameter("description");
         String availableParam = request.getParameter("available");
+        String imageUrl = request.getParameter("imageUrl");
 
         if (roomName == null || roomName.isBlank()) {
             throw new IllegalArgumentException("Room name is required.");
@@ -193,12 +196,15 @@ public class RoomServlet extends HttpServlet {
             throw new IllegalArgumentException("Location is required.");
         }
 
+        
+        
         return new RoomRequest.Builder()
                 .roomName(roomName.trim())
                 .capacity(capacity)
                 .location(location.trim())
                 .description(description == null ? null : description.trim())
                 .available(availableParam == null || Boolean.parseBoolean(availableParam))
+                .imageUrl(imageUrl == null || imageUrl.isBlank() ? null : imageUrl.trim())
                 .build();
     }
 
@@ -207,7 +213,7 @@ public class RoomServlet extends HttpServlet {
         if (session == null) {
             return false;
         }
-        Object userObj = session.getAttribute("userConnected", user);
+        Object userObj = session.getAttribute("userConnected");
         if (!(userObj instanceof UserResponse user)) {
             return false;
         }

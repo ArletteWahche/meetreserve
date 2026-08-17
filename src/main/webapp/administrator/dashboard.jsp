@@ -31,6 +31,10 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
                         Dashboard
                     </a>
+                    <a class="nav-item" href="${pageContext.request.contextPath}/users">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 8a3 3 0 110-6M22 20c0-2.8-2-5-5-5.6"/></svg>
+                        Users
+                    </a>
                     <a class="nav-item" href="${pageContext.request.contextPath}/rooms">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 20V10"/></svg>
                         Rooms
@@ -46,213 +50,67 @@
                     <div class="foot-name">${currentUser.name} ${currentUser.surname}</div>
                     <div class="foot-role">Administrator</div>
                 </div>
-                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
-                    <button type="submit" class="logout-link" style="background:none;border:none;cursor:pointer;">Logout</button>
-                </form>
+                
             </div>
         </aside>
 
         <main class="main">
+        	
+        	<div class="top-bar">
+        		<form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
+                    <button type="submit" class="btn-logout-top" >Logout</button>
+                </form>
+        	</div>
 
             <div class="page-head">
-                <div class="eyebrow">Administration</div>
-                <h1 class="page-title">User Management</h1>
-                <p class="page-desc">Create employee, manager, or administrator accounts, and find all existing accounts here. ✅</p>
+                <div class="eyebrow">Good Morning ${currentUser.name}</div>
+                <h1 class="page-title">Administrator Dashboard</h1>
+                <p class="page-desc">Application Overview. Manage users and rooms from the menu on the left.</p>
             </div>
-
-            <c:if test="${not empty param.success}">
-                <div class="alert alert-success">User created successfully. ✅</div>
-            </c:if>
-            <c:if test="${not empty param.error}">
-                <div class="alert alert-error">${param.error}</div>
-            </c:if>
 
             <div class="grid-3">
                 <div class="card stat-card">
                     <div class="stat-label">Total users</div>
-                    <div class="stat-value">${fn:length(users)}</div>
+                    <div class="stat-value">${totalUsers}</div>
                 </div>
                 <div class="card stat-card">
                     <div class="stat-label">Employees</div>
-                    <div class="stat-value">
-                        <c:set var="employeeCount" value="0"/>
-                        <c:forEach var="u" items="${users}">
-                            <c:if test="${u.role == 'EMPLOYEE'}"><c:set var="employeeCount" value="${employeeCount + 1}"/></c:if>
-                        </c:forEach>
-                        ${employeeCount}
-                    </div>
+                    <div class="stat-value">${employeeCount}</div>
                 </div>
                 <div class="card stat-card">
                     <div class="stat-label">Managers</div>
-                    <div class="stat-value">
-                        <c:set var="managerCount" value="0"/>
-                        <c:forEach var="u" items="${users}">
-                            <c:if test="${u.role == 'MANAGER'}"><c:set var="managerCount" value="${managerCount + 1}"/></c:if>
-                        </c:forEach>
-                        ${managerCount}
-                    </div>
+                    <div class="stat-value">${managerCount}</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Rooms</div>
+                    <div class="stat-value">${totalRooms}</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Total reservations</div>
+                    <div class="stat-value">${totalReservations}</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-label">Pending validation</div>
+                    <div class="stat-value">${pendingCount}</div>
                 </div>
             </div>
-            
-             <!-- ===== Formulaire de création de salle ===== -->
-            <div class="admin-toolbar">
-                <h3>Create a room</h3>
-            </div>
-
-            <div class="card" style="padding: 22px;">
-                <form action="${pageContext.request.contextPath}/rooms" method="post">
-                    <input type="hidden" name="action" value="create">
-
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="nameRoom">Room name</label>
-                            <input type="text" id="roomName" name="roomName" required>
-                        </div>
-                        <div class="field">
-                            <label for="capacity">Capacity</label>
-                            <input type="number" id="capacity" name="capacity" min="1" required>
-                        </div>
-                        <div class="field">
-                            <label for="location">Location</label>
-                            <input type="text" id="location" name="location" placeholder="Ex : Second floor" required>
-                        </div>
-                        <div class="field">
-                            <label for="available">Availability</label>
-                            <select id="available" name="available">
-                                <option value="true">Available</option>
-                                <option value="false">Unavailable</option>
-                            </select>
-                        </div>
-                        <div class="field" style="grid-column: 1 / -1;">
-                            <label for="description">Description</label>
-                            <input type="text" id="description" name="description" placeholder="Ex :  Room with a projector">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">+ Create a room</button>
-                </form>
-            </div>
 
             <div class="admin-toolbar">
-                <h3>All the rooms</h3>
+                <h3>Quick Access</h3>
             </div>
 
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr>
-                        	<th>Name</th>
-                        	<th>Capacity</th>
-                        	<th>Location</th>
-                        	<th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:choose>
-                            <c:when test="${empty rooms}">
-                                <tr class="empty-row"><td colspan="4">No room for the moment.</td></tr>
-                            </c:when>
-                            <c:otherwise>
-                                <c:forEach var="room" items="${rooms}">
-                                    <tr>
-                                        <td><strong>${room.nameRoom}</strong></td>
-                                        <td>${room.capacity} places</td>
-                                        <td>${room.location}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${room.available}">
-                                                    <span class="status-pill confirmed">Free</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="status-pill cancelled">Unavailable</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </c:otherwise>
-                        </c:choose>
-                    </tbody>
-                </table>
+            <div class="grid-2">
+                <a href="${pageContext.request.contextPath}/users" class="card" style="padding: 22px; text-decoration:none; color:inherit;">
+                    <h3 style="margin:0 0 6px;">Manage users →</h3>
+                    <p style="margin:0; color:var(--muted); font-size:13px;">Create an employee, manager, or administrator account, and view the list.</p>
+                </a>
+                <a href="${pageContext.request.contextPath}/rooms" class="card" style="padding: 22px; text-decoration:none; color:inherit;">
+                    <h3 style="margin:0 0 6px;">Manage rooms →</h3>
+                    <p style="margin:0; color:var(--muted); font-size:13px;">Create a new room, view the list, and check their availability.</p>
+                </a>
             </div>
-
-            <!-- ===== Formulaire de création ===== -->
-            <div class="admin-toolbar">
-                <h3>Create a user</h3>
-            </div>
-
-            <div class="card" style="padding: 22px;">
-                <form action="${pageContext.request.contextPath}/dashboard/administrator" method="post">
-                    <input type="hidden" name="action" value="createUser">
-
-                    <div class="form-grid">
-                        <div class="field">
-                            <label for="name">Surname</label>
-                            <input type="text" id="name" name="name" required>
-                        </div>
-                        <div class="field">
-                            <label for="surname">Name</label>
-                            <input type="text" id="surname" name="surname" required>
-                        </div>
-                        <div class="field">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="field">
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" required minlength="6">
-                            <p class="field-hint">Minimum 6 characters. Please share these login credentials with the user. ⭐</p>
-                        </div>
-                        <div class="field" style="grid-column: 1 / -1;">
-                            <label for="role">Role</label>
-                            <select id="role" name="role" required>
-                                <c:forEach var="r" items="${roles}">
-                                    <option value="${r}">${r}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">+ Create the user</button>
-                </form>
-            </div>
-
-            <!-- ===== Liste des utilisateurs ===== -->
-            <div class="admin-toolbar">
-                <h3>All the users</h3>
-                <input class="search-input" type="text" id="userSearch" placeholder="Rechercher un utilisateur..." onkeyup="filterUsers()">
-            </div>
-
-            <div class="card">
-                <table id="usersTable">
-                    <thead>
-                        <tr>
-                        	<th>Name</th>
-                        	<th>Email</th>
-                        	<th>Role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:choose>
-                            <c:when test="${empty users}">
-                                <tr class="empty-row"><td colspan="3">No user for the moment.</td></tr>
-                            </c:when>
-                            <c:otherwise>
-                                <c:forEach var="u" items="${users}">
-                                    <tr>
-                                        <td><strong>${u.name} ${u.surname}</strong></td>
-                                        <td>${u.email}</td>
-                                        <td><span class="status-pill ${u.role}">${u.role}</span></td>
-                                    </tr>
-                                </c:forEach>
-                            </c:otherwise>
-                        </c:choose>
-                    </tbody>
-                </table>
-            </div>
-
-        </main>
-    </div>
+		</main>
+	</div>
 
     <script>
         function filterUsers() {

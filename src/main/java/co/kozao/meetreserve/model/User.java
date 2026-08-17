@@ -2,6 +2,7 @@ package co.kozao.meetreserve.model;
 
 public class User {
     private Long id;
+    private Long managerId;
     private String name;
     private String surname;
     private String email;
@@ -11,6 +12,7 @@ public class User {
     // Constructeur privé — utilisé uniquement par le Builder
     private User(Builder builder) {
         this.id = builder.id;
+        this.managerId = builder.managerId;
         this.name = builder.name;
         this.surname = builder.surname;
         this.email = builder.email;
@@ -20,6 +22,7 @@ public class User {
 
     // Getters
     public Long getId() { return id; }
+    public Long getManagerId() { return managerId; }
     public String getName() { return name; }
     public String getSurname() { return surname; }
     public String getEmail() { return email; }
@@ -28,6 +31,7 @@ public class User {
 
     // Setters (gardés, car ton DAO/Service les utilisent)
     public void setId(Long id) { this.id = id; }
+    public void setManagerId(Long managerId) { this.managerId = managerId; }
     public void setName(String name) { this.name = name; }
     public void setSurname(String surname) { this.surname = surname; }
     public void setEmail(String email) { this.email = email; }
@@ -36,6 +40,7 @@ public class User {
 
     public static class Builder {
         private Long id;
+        private Long managerId;
         private String name;
         private String surname;
         private String email;
@@ -44,6 +49,11 @@ public class User {
 
         public Builder id(Long id) {
             this.id = id;
+            return this;
+        }
+        
+        public Builder managerId(Long managerId) {
+            this.managerId = managerId;
             return this;
         }
 

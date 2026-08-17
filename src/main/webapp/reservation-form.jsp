@@ -30,19 +30,46 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
                         Dashboard
                     </a>
-                    <a class="nav-item active" href="${pageContext.request.contextPath}/reservations">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
-                        My reservations
-                    </a>
                     <a class="nav-item" href="${pageContext.request.contextPath}/rooms">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 20V10"/></svg>
                         Available rooms
+                    </a>
+                    <a class="nav-item active" href="${pageContext.request.contextPath}/calendar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4.5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v3M16 3v3"/></svg>
+                        Calendar
+                    </a>
+                    <a class="nav-item" href="${pageContext.request.contextPath}/reservations">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/></svg>
+                        My reservations
+                    </a>
+                    
+                </div>
+            </div>
+            
+            <div>
+                <div class="nav-group-label">Account</div>
+                <div class="nav">
+                   
+                    <a class="nav-item" href="${pageContext.request.contextPath}/historique">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                        History
+                    </a>
+                    <a class="nav-item" href="${pageContext.request.contextPath}/notifications">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+                        Notifications
                     </a>
                 </div>
             </div>
         </aside>
 
         <main class="main" style="max-width: 640px;">
+        
+        	<div class="top-bar">
+                <form action="${pageContext.request.contextPath}/logout" method="post">
+                    <button type="submit" class="btn-logout-top">Logout</button>
+                </form>
+            </div>
+        	
 
             <div class="page-head">
                 <div class="eyebrow">New reservation</div>
@@ -71,7 +98,7 @@
                             <option value="" disabled ${empty param.roomId ? 'selected' : ''}>Choose a room</option>
                             <c:forEach var="room" items="${rooms}">
                                 <option value="${room.id}" ${param.roomId == room.id ? 'selected' : ''}>
-                                    ${room.nameRoom} · ${room.capacity} places
+                                    ${room.roomName} · ${room.capacity} places
                                     <c:if test="${not empty room.location}"> · ${room.location}</c:if>
                                 </option>
                             </c:forEach>
@@ -98,10 +125,11 @@
                             <label for="endTime">End</label>
                             <input type="time" id="endTime" name="endTime" required>
                         </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">Confirm the reservation</button>
+                
                     </div>
-
-                    <button type="submit" class="btn btn-primary btn-block">Confirmed the reservation</button>
-                </form>
+				</form>
             </div>
 
         </main>

@@ -7,6 +7,7 @@ public class RoomRequest {
     private String location;
     private String description;
     private boolean available = true;
+    private String imageUrl;
 
     // Constructeur privé utilisé par le Builder
     public RoomRequest(Builder builder) {
@@ -15,6 +16,7 @@ public class RoomRequest {
         this.location = builder.location;
         this.description = builder.description;
         this.available = builder.available;
+        this.imageUrl = builder.imageUrl;
     }
 
     public String getRoomName() {
@@ -56,6 +58,15 @@ public class RoomRequest {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
 
 
     // ==== Builder ====
@@ -65,6 +76,7 @@ public class RoomRequest {
         private String location;
         private String description;
         private Boolean available;
+        private String imageUrl;
 
         public Builder roomName(String roomName) {
             this.roomName = roomName;
@@ -88,6 +100,11 @@ public class RoomRequest {
         
         public Builder available(Boolean available) {
             this.available = available;
+            return this;
+        }
+        
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 

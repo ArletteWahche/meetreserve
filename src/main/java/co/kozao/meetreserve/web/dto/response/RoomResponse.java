@@ -9,6 +9,7 @@ public class RoomResponse {
     private String description;
     private Boolean available;
     private Boolean isDeleted;
+    private String imageUrl;
 
     // Constructeur privé utilisé par le Builder
     private RoomResponse(Builder builder) {
@@ -19,6 +20,7 @@ public class RoomResponse {
         this.description = builder.description;
         this.available = builder.available;
         this.isDeleted = builder.isDeleted;
+        this.imageUrl = builder.imageUrl;
     }
 
     public Long getId() {
@@ -76,6 +78,14 @@ public class RoomResponse {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     // ==== Builder ====
     public static class Builder {
@@ -86,6 +96,7 @@ public class RoomResponse {
         private String description;
         private Boolean available;
         private Boolean isDeleted;
+        private String imageUrl;
 
         public Builder id(Long id) {
             this.id = id;
@@ -119,6 +130,11 @@ public class RoomResponse {
 
         public Builder isDeleted(boolean isDeleted) {
             this.isDeleted = isDeleted;
+            return this;
+        }
+        
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 
