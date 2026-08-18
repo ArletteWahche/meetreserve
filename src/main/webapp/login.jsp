@@ -27,13 +27,13 @@
             <form action="${pageContext.request.contextPath}/login" method="post">
                 <div class="field">
                     <label for="email">Professional email address</label>
-                    <input type="email" id="email" name="email" placeholder="prenom.nom@kozao.net" required>
+                    <input type="email" id="email" name="email" placeholder="prenom.nom@kozao.net" value="${email}" required>
                 </div>
                 
                 <div class="field">
                     <div class="password-wrapper">
 						<label for="password">Password</label>
-					    <input type="password" id="password" name="password" autocomplete="new-password" required>
+					    <input type="password" id="password" name="password" autocomplete="new-password" value="${password}" required>
 					    <span id="togglePassword" class="toggle-icon">
 					        <i class="fa-solid fa-eye"></i>
 					    </span>

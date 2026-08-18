@@ -50,6 +50,8 @@ public class LoginServlet extends HttpServlet {
         if (isNotOk) {
             String errorMessage = "Login or password is Empty";
             request.setAttribute("error", errorMessage);
+            request.setAttribute("email", email);
+            request.setAttribute("password", password);
             LOG.info(String.format("Login: %s or password: %s is Empty", email, password));
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return; 
@@ -58,6 +60,8 @@ public class LoginServlet extends HttpServlet {
         try {
             if(!userService.emailExists(email)){
                 request.setAttribute("error", "Invalid email : " + email);
+                request.setAttribute("email", email);
+                request.setAttribute("password", password);
                 LOG.info(String.format("Invalid Email. Login: %s ", email));
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return;
@@ -67,6 +71,8 @@ public class LoginServlet extends HttpServlet {
             if (user == null) {
                 String errorMessage = String.format("Invalid password : %s", password);
                 request.setAttribute("error", errorMessage);
+                request.setAttribute("email", email);
+                request.setAttribute("password", password);
                 LOG.info(errorMessage);
                 response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return; 
