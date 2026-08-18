@@ -10,13 +10,19 @@
     <title>Notifications — MeetReserve</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
 
-    <div class="app">
+	<c:set var="unreadCount" value="0"/>
+    <c:forEach var="n" items="${notification}">
+        <c:if test="${n.read == false}"><c:set var="unreadCount" value="${unreadCount + 1}"/></c:if>
+    </c:forEach>
 
-        <aside class="sidebar">
+    <div class="app">
+		<div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <div class="brand-mark">MR</div>
                 <div>
@@ -50,13 +56,15 @@
             <div>
                 <div class="nav-group-label">Account</div>
                 <div class="nav">
-                    <a class="nav-item" href="${pageContext.request.contextPath}/historique">
+                    <a class="nav-item" href="${pageContext.request.contextPath}/history">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
                         History
                     </a>
-                    <a class="nav-item active" href="${pageContext.request.contextPath}/notifications">
+                    <a class="nav-item active" href="${pageContext.request.contextPath}/notification">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
                         Notifications
+                        <c:if test="${unreadCount > 0}"><span class="notif-badge">${unreadCount}</span></c:if>
+
                     </a>
                 </div>
             </div>
@@ -73,19 +81,22 @@
         <main class="main">
 
             <div class="top-bar">
-                <form action="${pageContext.request.contextPath}/logout" method="post">
-                    <button type="submit" class="btn-logout-top">Logout</button>
-                </form>
-            </div>
+			    <button type="button" class="hamburger-btn" id="sidebarToggle" aria-label="Menu">
+			        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+			    </button>
+			    <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
+			        <button type="submit" class="btn-logout-top">Logout</button>
+			    </form>
+			</div>
 
             <div class="page-head">
-                <div class="eyebrow">Notifications</div>
-                <h1 class="page-title">Your notifications</h1>
-                <p class="page-desc">Updates on your reservation requests.</p>
+                <div class="eyebrow">Activity</div>
+                <h1 class="page-title">Notifications</h1>
+                <p class="page-desc">Confirmations, reminders and updates related to your reservations.</p>
             </div>
 
             <c:if test="${not empty notifications}">
-                <form action="${pageContext.request.contextPath}/notifications" method="post" style="margin-bottom:16px;">
+                <form action="${pageContext.request.contextPath}/notification" method="post" style="margin-bottom:16px;">
                     <input type="hidden" name="action" value="markAllRead">
                     <button type="submit" class="btn">Mark all as read</button>
                 </form>
@@ -98,6 +109,31 @@
                     </c:when>
                     <c:otherwise>
                         <c:forEach var="n" items="${notifications}">
+                        
+                        	 <div class="notif-item  ${n.read == false ? 'unread' : ''}">
+                                <div class="notif-icon ${n.status == 'CONFIRMED' ? 'confirm' : n.status == 'CANCELLED' ? 'cancel' : 'reminder'}">
+                                    <c:choose>
+                                        <c:when test="${n.status == 'CONFIRMED'}">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 13l4 4L19 7"/></svg>
+                                        </c:when>
+                                        <c:when test="${n.status == 'CANCELLED'}">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                
+                                <div class="notif-text" style="flex:1;">
+                                    <div class="notif-title">${n.title}</div>
+                                    <div>${n.message}</div>
+                                    <div class="notif-time">
+                                        <fmt:formatDate value="${n.timestamp}" pattern="dd/MM/yyyy à HH:mm" />
+                                    </div>
+                                </div>
+                            </div>
+                        
                             <div class="notif-row ${n.read ? '' : 'unread'}">
                                 <div>
                                     <p style="margin:0;">${n.message}</p>
@@ -106,7 +142,7 @@
                                     </p>
                                 </div>
                                 <c:if test="${!n.read}">
-                                    <form action="${pageContext.request.contextPath}/notifications" method="post">
+                                    <form action="${pageContext.request.contextPath}/notification" method="post">
                                         <input type="hidden" name="id" value="${n.id}">
                                         <button type="submit" class="icon-btn" title="Mark as read">✓</button>
                                     </form>

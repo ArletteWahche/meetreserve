@@ -9,6 +9,7 @@
     <title>Rooms — MeetReserve</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
@@ -21,8 +22,8 @@
     </c:choose>
 
     <div class="app">
-
-        <aside class="sidebar">
+		<div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <div class="brand-mark">MR</div>
                 <div>
@@ -64,11 +65,14 @@
         <main class="main">
 			
 				<div class="top-bar">
-	                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
-	                    <button type="submit" class="btn-logout-top" >Logout</button>
-	                </form>
-            	</div>
-			
+				    <button type="button" class="hamburger-btn" id="sidebarToggle" aria-label="Menu">
+				        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+				    </button>
+				    <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
+				        <button type="submit" class="btn-logout-top">Logout</button>
+				    </form>
+				</div>
+				
             <div class="page-head">
                 <div class="eyebrow">Rooms</div>
                 <h1 class="page-title">All rooms</h1>

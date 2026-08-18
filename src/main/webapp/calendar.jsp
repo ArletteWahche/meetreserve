@@ -9,15 +9,14 @@
     <title>MeetReserve — Calendar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="${pageContext.request.contextPath}/js/sidebar.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head>
 <body>
 
     <div class="app">
-    
-    		
-
-        <aside class="sidebar">
+		<div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
             <div class="brand">
                 <div class="brand-mark">MR</div>
                 <div>
@@ -54,11 +53,11 @@
                 <div class="nav-group-label">Account</div>
                 <div class="nav">
                    
-                    <a class="nav-item" href="${pageContext.request.contextPath}/historique">
+                    <a class="nav-item" href="${pageContext.request.contextPath}/history">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
                         History
                     </a>
-                    <a class="nav-item" href="${pageContext.request.contextPath}/notifications">
+                    <a class="nav-item" href="${pageContext.request.contextPath}/notification">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
                         Notifications
                     </a>
@@ -78,6 +77,15 @@
         </aside>
 
         <main class="main">
+        
+        	<div class="top-bar">
+			    <button type="button" class="hamburger-btn" id="sidebarToggle" aria-label="Menu">
+			        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+			    </button>
+			    <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
+			        <button type="submit" class="btn-logout-top">Logout</button>
+			    </form>
+			</div>
 
             <div class="page-head">
                 <div class="eyebrow">View all</div>
@@ -86,12 +94,7 @@
             </div>
 
             <div class="cal-toolbar">
-            	<div class="btn btn-amber">
-	                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin-left:auto;">
-	                    <button type="submit" class="logout-link" style="background-color:dark-blue;border-radius:20px;cursor:pointer;">Logout</button>
-	                </form>
-            	</div>
-            
+            	
                 <div class="cal-nav">
                     <a href="${pageContext.request.contextPath}/calendar?week=${weekOffset - 1}" style="color:inherit;">‹</a>
                     &nbsp;${weekLabel}&nbsp;
@@ -101,27 +104,27 @@
             </div>
 
             <div class="cal-grid">
-                <div class="cal-time" style="background:var(--panel-alt); border-bottom:1px solid var(--line);"></div>
-                <c:forEach var="d" items="${days}">
-                    <div class="cal-head">${d.label}</div>
-                </c:forEach>
-                <c:forEach var="row" items="${rows}">
-                    <div class="cal-time">${row.label}</div>
-                    <c:forEach var="dayEvents" items="${row.cells}">
-                        <div class="cal-cell">
-                            <c:forEach var="evt" items="${dayEvents}">
-                                <div class="cal-evt ${evt.status == 'PENDING' ? 'other' : ''}">
-                                    <c:choose>
-                                        <c:when test="${not empty evt.roomName}">${evt.roomName}</c:when>
-                                        <c:otherwise>Room #${evt.roomId}</c:otherwise>
-                                    </c:choose>
-                                    · ${evt.subject}
-                                </div>
-                            </c:forEach>
-                        </div>
-                    </c:forEach>
-                </c:forEach>
-            </div>
+			    <div class="cal-time" style="background:var(--panel-alt); border-bottom:1px solid var(--line);"></div>
+			    <c:forEach var="d" items="${weekDayLabels}">
+			        <div class="cal-head">${d}</div>
+			    </c:forEach>
+			    <c:forEach var="row" items="${rows}">
+			        <div class="cal-time">${row.label}</div>
+			        <c:forEach var="evt" items="${row.cells}">
+			            <div class="cal-cell">
+			                <c:if test="${not empty evt}">
+			                    <div class="cal-evt ${evt.status == 'PENDING' ? 'other' : ''}">
+			                        <c:choose>
+			                            <c:when test="${not empty evt.roomName}">${evt.roomName}</c:when>
+			                            <c:otherwise>Room #${evt.roomId}</c:otherwise>
+			                        </c:choose>
+			                        · ${evt.subject}
+			                    </div>
+			                </c:if>
+			            </div>
+			        </c:forEach>
+			    </c:forEach>
+			</div>
 
         </main>
     </div>

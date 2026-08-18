@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
-@WebServlet("/historiy")
+@WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
 
     private ReservationService reservationService;
