@@ -1,6 +1,8 @@
 package co.kozao.meetreserve.dao.impl;
 
 import co.kozao.meetreserve.dao.database.DatabaseConnection;
+
+
 import co.kozao.meetreserve.dao.query.ReservationSqlQueries;
 import co.kozao.meetreserve.dao.service.ReservationDao;
 import co.kozao.meetreserve.model.Reservation;
@@ -10,6 +12,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,8 +37,18 @@ public class ReservationDaoImpl implements ReservationDao {
             ps.setString(7, reservation.getStatus().name());
             ps.setDate(8, (Date) reservation.getCreatedAt());
 
-            Long reservationId = (long) ps.executeUpdate();
-            reservation.setId(reservationId);
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                return null;
+            }
+
+            // On récupère le vrai id généré par PostgreSQL, pas le nombre de lignes affectées
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    reservation.setId(generatedKeys.getLong(1));
+                }
+            }
+
 
             return reservation;
 
@@ -45,7 +58,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public Reservation update(long reservationId, Reservation reservation) {
+    public Reservation update(Long reservationId, Reservation reservation) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_UPDATE_RESERVATION);
@@ -67,7 +80,7 @@ public class ReservationDaoImpl implements ReservationDao {
         }
     }
 
-    public boolean delete(long reservationId) {
+    public Boolean deleted(Long reservationId) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_DELETE_RESERVATION);
@@ -80,7 +93,7 @@ public class ReservationDaoImpl implements ReservationDao {
         return false;
     }
 
-    public Reservation findById(long id) {
+    public Reservation findById(Long id) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_FIND_BY_ID);
@@ -116,7 +129,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     //  méthode pour chercher par userId  change le nom pour éviter les conflits avec findById
-    public List<Reservation> findByUserId(long userId) {
+    public List<Reservation> findByUserId(Long userId) {
 
         try {
             PreparedStatement ps = DatabaseConnection.getInstance()
@@ -137,7 +150,7 @@ public class ReservationDaoImpl implements ReservationDao {
     }
 
     @Override
-    public Reservation updateStatus(long reservationId, ReservationStatus status) {
+    public Reservation updateStatus(Long reservationId, ReservationStatus status) {
         try{
             PreparedStatement ps = DatabaseConnection.getInstance()
                     .prepareStatement(ReservationSqlQueries.SQL_UPDATE_STATUS);
@@ -150,9 +163,30 @@ public class ReservationDaoImpl implements ReservationDao {
                 return mapRowToReservation(rs);
             }
         } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error while retrieving reservation by id.", e);
+            logger.log(Level.SEVERE, "Error while updating reservation status.", e);
         }
         return null;
+    }
+    
+    @Override
+    public Boolean hasConflict(Long roomId, Date reservationDate, Time startTime, Time endTime) {
+    	try {
+    		PreparedStatement ps = DatabaseConnection.getInstance()
+    				.prepareStatement(ReservationSqlQueries.SQL_CHECK_CONFLICT);
+    		
+    		ps.setLong(1, roomId);
+    		ps.setDate(2, new Date(reservationDate.getTime()));
+    		ps.setTime(3, endTime);
+    		ps.setTime(4, startTime);
+    		
+    		ResultSet rs = ps.executeQuery();
+    		if(rs.next()) {
+    			return rs.getInt(1) > 0;
+    		}
+    	}catch (SQLException e) {
+    		logger.log(Level.SEVERE, "Error while checking reservation conflict.", e);
+    	}
+    	return false;
     }
 
     private Reservation mapRowToReservation(ResultSet rs) throws SQLException {
@@ -168,4 +202,12 @@ public class ReservationDaoImpl implements ReservationDao {
                 .createdAt(rs.getDate("created_at"))
                 .build();
     }
+
+	@Override
+	public Boolean delete(Long reservationId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
 }

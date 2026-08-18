@@ -1,6 +1,5 @@
 package co.kozao.meetreserve.web.dto.response;
 
-import co.kozao.meetreserve.model.Reservation;
 import co.kozao.meetreserve.model.ReservationStatus;
 
 import java.sql.Time;
@@ -11,19 +10,24 @@ public class ReservationResponse {
     private Long id;
     private Long userId;
     private Long roomId;
+    private String roomName;
     private Date reservationDate;
     private Time startTime;
     private Time endTime;
     private String subject;
     private ReservationStatus status;
     private Date createdAt;
-    private boolean deleted;
+    private Boolean deleted;
 
+    public ReservationResponse(){
+
+    }
 
     private ReservationResponse(Builder builder) {
         this.id = builder.id;
         this.userId = builder.userId;
         this.roomId = builder.roomId;
+        this.roomName = builder.roomName;
         this.reservationDate = builder.reservationDate;
         this.startTime = builder.startTime;
         this.endTime = builder.endTime;
@@ -47,6 +51,14 @@ public class ReservationResponse {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+    
+    public String getRoomName() {
+        return roomName;
+    }
+
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Date getReservationDate() {
@@ -115,6 +127,7 @@ public class ReservationResponse {
         private Long id;
         private Long userId;
         private Long roomId;
+        private String roomName; 
         private Date reservationDate;
         private Time startTime;
         private Time endTime;
@@ -135,6 +148,11 @@ public class ReservationResponse {
 
         public ReservationResponse.Builder roomId(Long roomId) {
             this.roomId = roomId;
+            return this;
+        }
+        
+        public ReservationResponse.Builder roomName(String roomName) {
+            this.roomName = roomName;
             return this;
         }
 

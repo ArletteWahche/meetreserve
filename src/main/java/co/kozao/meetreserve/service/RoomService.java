@@ -1,6 +1,7 @@
 package co.kozao.meetreserve.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import co.kozao.meetreserve.dao.impl.RoomDaoImpl;
 import co.kozao.meetreserve.mapper.RoomMapper;
@@ -24,9 +25,12 @@ public class RoomService {
         }
 
         Room room = roomMapper.mapToEntity(request);
-        room = roomDaoImpl.insert(room);
-
-        return roomMapper.mapToResponse(room);
+        
+        Room created = roomDaoImpl.insert(room);
+        if (created == null) {
+            return null;
+        }
+        return roomMapper.mapToResponse(created);
     }
 
     public RoomResponse updateRoom(long id, RoomRequest request) {
@@ -39,13 +43,13 @@ public class RoomService {
         return roomMapper.mapToResponse(room);
     }
 
-    public boolean deleteRoom(long id) {
+    public Boolean deletedRoom(long id) {
         Room existingRoom = roomDaoImpl.findById(id);
         if (existingRoom == null) {
             throw new IllegalArgumentException("Room not found");
         }
 
-        return roomDaoImpl.delete(existingRoom);
+        return roomDaoImpl.deleted(existingRoom);
     }
 
     public RoomResponse getRoomById(long id) {
@@ -56,7 +60,14 @@ public class RoomService {
     public List<RoomResponse> getAllRooms() {
         return roomDaoImpl.findAll().stream()
                 .map(roomMapper::mapToResponse)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
     }
+    
+    public List<RoomResponse> getAvailableRooms() {
+        return roomDaoImpl.findAvailable().stream()
+                .map(roomMapper::mapToResponse)
+                .collect(Collectors.toList());
+    }
+    
 
 }

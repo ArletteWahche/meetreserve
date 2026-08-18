@@ -1,7 +1,5 @@
 package co.kozao.meetreserve.web.dto.resquest;
 
-import co.kozao.meetreserve.model.Reservation;
-
 import java.sql.Time;
 import java.util.Date;
 
@@ -70,7 +68,7 @@ public class ReservationRequest {
         this.roomId = roomId;
     }
 
-    public class Builder {
+    public static class Builder {
         private Long userId;
         private Long roomId;
         private Date reservationDate;

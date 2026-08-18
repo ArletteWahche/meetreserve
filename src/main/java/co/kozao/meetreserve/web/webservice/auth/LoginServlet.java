@@ -3,6 +3,8 @@ package co.kozao.meetreserve.web.webservice.auth;
 import co.kozao.meetreserve.model.Role;
 import co.kozao.meetreserve.service.UserService;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
+
+import co.kozao.meetreserve.web.dto.resquest.UserRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,15 +15,27 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-@WebServlet("/login")
+@WebServlet( "/login")
 public class LoginServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(LoginServlet.class.getName());
+
     private UserService userService;
 
     @Override
     public void init() throws ServletException {
         this.userService = new UserService();
+        boolean exists = this.userService.emailExists("admin@gmail.com");
+        if (!exists) {
+            UserRequest adminUser = new UserRequest.Builder()
+                    .name("Admin")
+                    .surname("Admin")
+                    .email("admin@gmail.com")
+                    .password("admin1")
+                    .role("ADMINISTRATOR")
+                    .build();
+            userService.register(adminUser);
+        }
     }
 
     @Override
@@ -30,48 +44,60 @@ public class LoginServlet extends HttpServlet {
 
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+
         boolean isNotOk = email == null || email.isBlank() || password == null || password.isBlank();
 
-        String errorMessage = "";
         if (isNotOk) {
-            errorMessage = "Login or password is Empty";
+            String errorMessage = "Login or password is Empty";
+            request.setAttribute("error", errorMessage);
             LOG.info(String.format("Login: %s or password: %s is Empty", email, password));
-            response.sendRedirect(request.getContextPath() + "/login.jsp?error="+errorMessage);
-            return;
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return; 
         }
 
         try {
-            UserResponse user = userService.login(email, password);
+            if(!userService.emailExists(email)){
+                request.setAttribute("error", "Invalid email : " + email);
+                LOG.info(String.format("Invalid Email. Login: %s ", email));
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
 
+            UserResponse user = userService.login(email, password);
             if (user == null) {
-                errorMessage = "Invalid credential";
-                LOG.info(String.format("Invalid credential. Login: %s password: %s is Empty", email, password));
-                response.sendRedirect(request.getContextPath() + "/login.jsp?error="+errorMessage);
+                String errorMessage = String.format("Invalid password : %s", password);
+                request.setAttribute("error", errorMessage);
+                LOG.info(errorMessage);
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return; 
             }
 
             HttpSession session = request.getSession(true);
             session.setAttribute("userConnected", user);
             Role role = Role.valueOf(user.getRole());
-
             switch (role) {
-                case Role.EMPLOYEE:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/employee");
+                case EMPLOYEE:
+                    response.sendRedirect(request.getContextPath() + "/dashboard/employee");
                     break;
-                case Role.MANAGER:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/manager");
+                case MANAGER:
+                    response.sendRedirect(request.getContextPath() + "/dashboard/manager");
                     break;
-                case Role.ADMINISTRATOR:
-                    response.sendRedirect(request.getContextPath() + "/dashbord/administrator");
+                case ADMINISTRATOR:
+                    response.sendRedirect(request.getContextPath() + "/dashboard/administrator");
                     break;
                 default:
-                    errorMessage = "User don't have a right role";
-                    response.sendRedirect(request.getContextPath() + "/login.jsp?error="+errorMessage);
+                    String errorMessage = "User don't have a right role";
+                    response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
                     break;
             }
+            
+
         } catch (Exception e) {
             LOG.warning(String.format("error: %s", e.getMessage()));
-            request.setAttribute("error", "An error occurred. Please try again.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            if (!response.isCommitted()) {
+                request.setAttribute("error", "An error occurred. Please try again.");
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
+            }
         }
     }
 

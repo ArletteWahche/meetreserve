@@ -1,8 +1,5 @@
 package co.kozao.meetreserve.web.webservice.auth;
 
-import java.io.IOException;
-import co.kozao.meetreserve.model.Role;
-import co.kozao.meetreserve.model.User;
 import co.kozao.meetreserve.service.UserService;
 import co.kozao.meetreserve.service.ValidationResult;
 import co.kozao.meetreserve.web.dto.resquest.UserRequest;
@@ -11,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {

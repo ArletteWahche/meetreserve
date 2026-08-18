@@ -1,16 +1,21 @@
 package co.kozao.meetreserve.dao.service;
 
 import co.kozao.meetreserve.model.Reservation;
-import co.kozao.meetreserve.model.ReservationStatus;
 
+
+import co.kozao.meetreserve.model.ReservationStatus;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 public interface ReservationDao {
     Reservation insert(Reservation reservation);
-    Reservation update(long reservationId, Reservation reservation);
-    boolean delete(long reservationId);
-    Reservation findById(long id);
+    Reservation update(Long reservationId, Reservation reservation);
+    Boolean delete(Long reservationId);
+    Reservation findById(Long id);
     List<Reservation> findAll();
-    List<Reservation> findByUserId(long userId);
-    Reservation updateStatus(long reservationId, ReservationStatus status);
+    List<Reservation> findByUserId(Long userId);
+    Reservation updateStatus(Long reservationId, ReservationStatus status);
+    Boolean hasConflict(Long roomId, Date reservationDate, Time startTime, Time endTime);
+	
 }

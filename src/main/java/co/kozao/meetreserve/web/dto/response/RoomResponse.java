@@ -3,20 +3,24 @@ package co.kozao.meetreserve.web.dto.response;
 public class RoomResponse {
 
     private Long id;
-    private String nameRoom;
+    private String roomName;
     private Long capacity;
     private String location;
     private String description;
-    private boolean isDeleted;
+    private Boolean available;
+    private Boolean isDeleted;
+    private String imageUrl;
 
     // Constructeur privé utilisé par le Builder
     private RoomResponse(Builder builder) {
         this.id = builder.id;
-        this.nameRoom = builder.nameRoom;
+        this.roomName = builder.roomName;
         this.capacity = builder.capacity;
         this.location = builder.location;
         this.description = builder.description;
+        this.available = builder.available;
         this.isDeleted = builder.isDeleted;
+        this.imageUrl = builder.imageUrl;
     }
 
     public Long getId() {
@@ -27,12 +31,12 @@ public class RoomResponse {
         this.id = id;
     }
 
-    public String getNameRoom() {
-        return nameRoom;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setNameRoom(String nameRoom) {
-        this.nameRoom = nameRoom;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public Long getCapacity() {
@@ -58,6 +62,14 @@ public class RoomResponse {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
 
     public boolean isDeleted() {
         return isDeleted;
@@ -66,23 +78,33 @@ public class RoomResponse {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     // ==== Builder ====
     public static class Builder {
         private Long id;
-        private String nameRoom;
+        private String roomName;
         private Long capacity;
         private String location;
         private String description;
-        private boolean isDeleted;
+        private Boolean available;
+        private Boolean isDeleted;
+        private String imageUrl;
 
         public Builder id(Long id) {
             this.id = id;
             return this;
         }
 
-        public Builder nameRoom(String nameRoom) {
-            this.nameRoom = nameRoom;
+        public Builder roomName(String roomName) {
+            this.roomName = roomName;
             return this;
         }
 
@@ -100,9 +122,19 @@ public class RoomResponse {
             this.description = description;
             return this;
         }
+        
+        public Builder available(Boolean available) {
+            this.available = available;
+            return this;
+        }
 
         public Builder isDeleted(boolean isDeleted) {
             this.isDeleted = isDeleted;
+            return this;
+        }
+        
+        public Builder imageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
 

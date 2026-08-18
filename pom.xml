@@ -14,6 +14,9 @@
 	<mindrot.version>0.4</mindrot.version>
 	<jstl.version>3.0.0</jstl.version>
 	<jsp-jstl.version>3.0.1</jsp-jstl.version>
+
+	<jetty-maven.version>11.0.26</jetty-maven.version>
+	<jetty.port>8080</jetty.port>
 </properties>
 
   <dependencies>
@@ -49,5 +52,16 @@
 	</dependency>
 	
   </dependencies>
+
+	<build>
+		<plugins>
+			<!-- Jetty plugin: allows running the webapp during development with 'mvn jetty:run' -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty-maven.version}</version>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

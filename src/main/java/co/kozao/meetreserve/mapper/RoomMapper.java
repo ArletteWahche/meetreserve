@@ -1,35 +1,57 @@
 package co.kozao.meetreserve.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import co.kozao.meetreserve.model.Room;
+
+
 import co.kozao.meetreserve.web.dto.response.RoomResponse;
 import co.kozao.meetreserve.web.dto.resquest.RoomRequest;
 
 public class RoomMapper {
 
-    public Room mapToEntity(RoomRequest request) {
-        return new Room.Builder()
-                .nameRoom(request.getNameRoom())
-                .capacity(request.getCapacity())
-                .location(request.getLocation())
-                .build();
-    }
+	public Room mapToEntity(RoomRequest request) {
+	    return new Room.Builder()
+	            .roomName(request.getRoomName())
+	            .capacity(request.getCapacity())
+	            .location(request.getLocation())
+	            .description(request.getDescription())
+	            .available(request.getAvailable())
+	            .imageUrl(request.getImageUrl())
+	            .build();
+	}
 
-    public RoomResponse mapToResponse(Room room) {
-        return new RoomResponse.Builder()
-                .id(room.getId())
-                .nameRoom(room.getNameRoom())
-                .capacity(room.getCapacity())
-                .location(room.getLocation())
-                .description(room.getDescription())
-                .isDeleted(room.getIsDeleted())
-                .build();
+	public RoomResponse mapToResponse(Room room) {
+	    return new RoomResponse.Builder()
+	            .id(room.getId())
+	            .roomName(room.getRoomName())
+	            .capacity(room.getCapacity())
+	            .location(room.getLocation())
+	            .description(room.getDescription())
+	            .available(room.getAvailable())
+	            .isDeleted(room.getIsDeleted())
+	            .imageUrl(room.getImageUrl())
+	            .build();
+	}
+    
+    public List<RoomResponse> mapToResponseList(List<Room> rooms){
+    	
+    	if(rooms == null) {
+    		return List.of();
+    	}
+    	return rooms.stream()
+    			.map(this::mapToResponse)
+    			.collect(Collectors.toList());
+    	
     }
 
     public Room updateEntity(Room room, RoomRequest roomRequest) {
         room.setCapacity(roomRequest.getCapacity());
         room.setLocation(roomRequest.getLocation());
         room.setDescription(roomRequest.getDescription());
-        room.setIsDeleted(roomRequest.getIsDeleted());
+        room.setAvailable(roomRequest.getAvailable());
+        room.setImageUrl(roomRequest.getImageUrl());
         return room;
     }
 }
