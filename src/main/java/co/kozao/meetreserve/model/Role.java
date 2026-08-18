@@ -4,7 +4,11 @@ public enum Role {
 	
 	ADMINISTRATOR,
 	MANAGER,
-	EMPLOYEE
+	EMPLOYEE;
+
+	public static Role valueOf(int roleParam) throws IllegalArgumentException {
+		return Role.valueOf(roleParam);
+	}
 
 }
 

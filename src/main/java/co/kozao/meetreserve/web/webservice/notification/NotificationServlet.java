@@ -18,6 +18,7 @@ import java.util.List;
 public class NotificationServlet extends HttpServlet {
 
     private NotificationService notificationService;
+    private static final String ALL_READ = "markAllRead";
 
     @Override
     public void init() throws ServletException {
@@ -55,7 +56,7 @@ public class NotificationServlet extends HttpServlet {
         if (user == null) return;
 
         String action = request.getParameter("action");
-        if ("markAllRead".equals(action)) {
+        if (ALL_READ.equalsIgnoreCase(action)) {
             notificationService.markAllAsRead(user.getId());
         } else {
             String idParam = request.getParameter("id");

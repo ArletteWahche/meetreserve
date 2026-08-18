@@ -1,12 +1,10 @@
 package co.kozao.meetreserve.web.webservice.room;
 
 import co.kozao.meetreserve.model.Role;
-
 import co.kozao.meetreserve.service.RoomService;
-import co.kozao.meetreserve.web.dto.resquest.RoomRequest;
 import co.kozao.meetreserve.web.dto.response.RoomResponse;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
-
+import co.kozao.meetreserve.web.dto.resquest.RoomRequest;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,11 +20,10 @@ import java.util.logging.Logger;
 public class RoomServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(RoomServlet.class.getName());
+    private static final String ERROR_KEY = "error";
+    private static final String ROOM_PATH = "/rooms";
 
     private RoomService roomService;
-    
-
-	
 
     @Override
     public void init() throws ServletException {
@@ -109,15 +106,17 @@ public class RoomServlet extends HttpServlet {
             RoomResponse created = roomService.addRoom(roomRequest);
 
             if (created == null) {
-                response.sendRedirect(request.getContextPath() + "/rooms?error=creation_failed");
+                request.setAttribute(ERROR_KEY, "Error during the process of creating room. Please try again");
+                response.sendRedirect(request.getContextPath() + ROOM_PATH);
                 return;
             }
 
-            response.sendRedirect(request.getContextPath() + "/rooms");
+            response.sendRedirect(request.getContextPath() + ROOM_PATH);
 
         } catch (IllegalArgumentException e) {
             LOG.warning("Invalid room data: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/rooms?error=" + e.getMessage());
+            request.setAttribute(ERROR_KEY, e.getMessage());
+            response.sendRedirect(request.getContextPath() + ROOM_PATH);
         }
     }
 
@@ -140,7 +139,8 @@ public class RoomServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid room id.");
         } catch (IllegalArgumentException e) {
             LOG.warning("Invalid room data: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/rooms?error=" + e.getMessage());
+            request.setAttribute(ERROR_KEY, e.getMessage());
+            response.sendRedirect(request.getContextPath() + ROOM_PATH);
         }
     }
 
@@ -155,13 +155,14 @@ public class RoomServlet extends HttpServlet {
         try {
             long roomId = Long.parseLong(idParam);
             boolean deleted = roomService.deletedRoom(roomId);
-            response.sendRedirect(request.getContextPath() + "/rooms" + (deleted ? "" : "?error=delete_failed"));
-
+            request.setAttribute(!deleted ? ERROR_KEY : "Success", deleted ? "failed to delete room" : "Deleted Successfully");
+            response.sendRedirect(request.getContextPath() + ROOM_PATH);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid room id.");
         } catch (IllegalArgumentException e) {
             LOG.warning("Room not found for deletion: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/rooms?error=not_found");
+            request.setAttribute(ERROR_KEY, "Room not found");
+            response.sendRedirect(request.getContextPath() + ROOM_PATH);
         }
     }
 

@@ -29,7 +29,6 @@ public class EmployeeDashboardServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(EmployeeDashboardServlet.class.getName());
 
-    // Fenêtre horaire affichée sur la frise (8h -> 18h), en minutes depuis minuit
     private static final int WINDOW_START_MIN = 8 * 60;
     private static final int WINDOW_END_MIN = 18 * 60;
     private static final int WINDOW_SPAN_MIN = WINDOW_END_MIN - WINDOW_START_MIN;
@@ -64,7 +63,7 @@ public class EmployeeDashboardServlet extends HttpServlet {
         List<RoomResponse> availableRooms = new ArrayList<>();
         if (!allRooms.isEmpty()) {
             List<Long> roomsBusyNow = allReservations.stream()
-                    .filter(r -> r.getStatus() != ReservationStatus.CANCELLED)
+                    .filter(r -> r.getStatus() != ReservationStatus.CONFIRMED)
                     .filter(r -> isToday(r, today) && coversNow(r))
                     .map(ReservationResponse::getRoomId)
                     .toList();

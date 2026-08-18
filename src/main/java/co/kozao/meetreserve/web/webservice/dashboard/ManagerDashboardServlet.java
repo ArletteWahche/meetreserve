@@ -46,10 +46,6 @@ public class ManagerDashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        if (!canManage(currentUser)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Reserved to managers.");
-            return;
-        }
 
         List<ReservationResponse> reservations = reservationService.getReservations();
         List<RoomResponse> rooms = roomService.getAllRooms();
@@ -79,10 +75,6 @@ public class ManagerDashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        if (!canManage(currentUser)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Reserved to managers.");
-            return;
-        }
 
         String idParam = request.getParameter("id");
         String action = request.getParameter("action");
@@ -94,13 +86,16 @@ public class ManagerDashboardServlet extends HttpServlet {
 
         try {
             long reservationId = Long.parseLong(idParam);
+            ReservationResponse reservation = new ReservationResponse();
 
             switch (action) {
                 case "confirm":
-                    reservationService.updateReservationStatus(reservationId, ReservationStatus.CONFIRMED);
+                    reservation = reservationService.updateReservationStatus(reservationId, ReservationStatus.CONFIRMED);
+                    sendNotification(reservation);
                     break;
                 case "cancel":
-                    reservationService.updateReservationStatus(reservationId, ReservationStatus.CANCELLED);
+                    reservation = reservationService.updateReservationStatus(reservationId, ReservationStatus.CANCELLED);
+                    sendNotification(reservation);
                     break;
                 default:
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
@@ -113,35 +108,18 @@ public class ManagerDashboardServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid reservation id.");
         } catch (IllegalArgumentException | IllegalStateException e) {
             LOG.warning("Could not update reservation status: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/dashboard/manager?error=" + e.getMessage());
+            request.setAttribute("error", e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/dashboard/manager");
         }
-        
-        Long reservationId = Long.parseLong(idParam);
-        ReservationResponse updated;
-
-        switch (action) {
-            case "confirm":
-                updated = reservationService.updateReservationStatus(reservationId, ReservationStatus.CONFIRMED);
-                break;
-            case "cancel":
-                updated = reservationService.updateReservationStatus(reservationId, ReservationStatus.CANCELLED);
-                break;
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown action: " + action);
-                return;
-        }
-
-        if (updated != null) {
-            String roomName = roomService.getRoomById(updated.getRoomId()) != null
-                    ? roomService.getRoomById(updated.getRoomId()).getRoomName() : null;
-            notificationService.notifyReservationStatusChange(updated, roomName);
-        }
-
         response.sendRedirect(request.getContextPath() + "/dashboard/manager");
         
     }
     
-    
+    private void sendNotification(ReservationResponse reservation){
+        String roomName = roomService.getRoomById(reservation.getRoomId()) != null
+                ? roomService.getRoomById(reservation.getRoomId()).getRoomName() : null;
+        notificationService.notifyReservationStatusChange(reservation, roomName);
+    }
 
     private UserResponse getConnectedUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -150,12 +128,5 @@ public class ManagerDashboardServlet extends HttpServlet {
         }
         Object userObj = session.getAttribute("userConnected");
         return (userObj instanceof UserResponse user) ? user : null;
-    }
-
-    private boolean canManage(UserResponse user) {
-        return user != null && (
-                Role.MANAGER.name().equals(user.getRole()) ||
-                Role.ADMINISTRATOR.name().equals(user.getRole())
-        );
     }
 }

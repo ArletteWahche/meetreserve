@@ -1,15 +1,7 @@
 package co.kozao.meetreserve.web.webservice.calendar;
 
-import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import co.kozao.meetreserve.service.ReservationService;
+import co.kozao.meetreserve.web.dto.response.CalendarRow;
 import co.kozao.meetreserve.web.dto.response.ReservationResponse;
 import co.kozao.meetreserve.web.dto.response.UserResponse;
 import jakarta.servlet.ServletException;
@@ -19,12 +11,22 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 
 @WebServlet("/calendar")
 public class CalendarServlet extends HttpServlet {
 
     
     private static final int[] ROW_HOURS = {9, 11, 14, 16};
+    private static final String CANCELLED = "CANCELLED";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -76,7 +78,7 @@ public class CalendarServlet extends HttpServlet {
         int bestDiff = Integer.MAX_VALUE;
 
         for (ReservationResponse r : reservations) {
-            if ("CANCELLED".equalsIgnoreCase(String.valueOf(r.getStatus()))) continue;
+            if (CANCELLED.equalsIgnoreCase(String.valueOf(r.getStatus()))) continue;
             if (!toLocalDate(r.getReservationDate()).isEqual(day)) continue;
 
             LocalTime start = r.getStartTime().toLocalTime();
@@ -100,18 +102,5 @@ public class CalendarServlet extends HttpServlet {
     private String formatWeekLabel(LocalDate monday, LocalDate friday) {
         String moisFin = friday.getMonth().getDisplayName(TextStyle.FULL, Locale.FRENCH);
         return "Semaine du " + monday.getDayOfMonth() + " au " + friday.getDayOfMonth() + " " + moisFin + " " + friday.getYear();
-    }
-
-    public static class CalendarRow {
-        private final String label;
-        private final List<ReservationResponse> cells;
-
-        public CalendarRow(String label, List<ReservationResponse> cells) {
-            this.label = label;
-            this.cells = cells;
-        }
-
-        public String getLabel() { return label; }
-        public List<ReservationResponse> getCells() { return cells; }
     }
 }

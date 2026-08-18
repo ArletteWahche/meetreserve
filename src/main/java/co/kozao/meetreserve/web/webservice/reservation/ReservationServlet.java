@@ -26,6 +26,11 @@ public class ReservationServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(ReservationServlet.class.getName());
 
+    private static final String CREATE = "create";
+    private static final String CANCEL = "cancel";
+    private static final String RESERVATION_PATH = "/reservation/new";
+    private static final String ERROR_KEY = "error";
+
     private ReservationService reservationService;
     private RoomService roomService;
 
@@ -48,7 +53,7 @@ public class ReservationServlet extends HttpServlet {
         String path = request.getServletPath();
 
         // ---- Formulaire de nouvelle réservation ----
-        if ("/reservation/new".equals(path)) {
+        if (RESERVATION_PATH.equalsIgnoreCase(path)) {
             List<RoomResponse> rooms = roomService.getAllRooms();
             request.setAttribute("rooms", rooms);
             request.getRequestDispatcher("/reservation-form.jsp").forward(request, response);
@@ -74,14 +79,14 @@ public class ReservationServlet extends HttpServlet {
 
         String action = request.getParameter("action");
         if (action == null || action.isBlank()) {
-            action = "create";
+            action = CREATE;
         }
 
         switch (action) {
-            case "create":
+            case CREATE:
                 handleCreate(request, response, user);
                 break;
-            case "cancel":
+            case CANCEL:
                 handleCancel(request, response, user);
                 break;
             default:
@@ -96,7 +101,8 @@ public class ReservationServlet extends HttpServlet {
             ReservationResponse created = reservationService.addReservation(reservationRequest);
 
             if (created == null) {
-                response.sendRedirect(request.getContextPath() + "/reservation/new?error=creation_failed");
+                request.setAttribute(ERROR_KEY, "Failed to create reservation. Please try again");
+                response.sendRedirect(request.getContextPath() + RESERVATION_PATH);
                 return;
             }
 
@@ -104,11 +110,13 @@ public class ReservationServlet extends HttpServlet {
 
         } catch (IllegalStateException e) {
             LOG.warning("Reservation conflict: " + e.getMessage());
+            request.setAttribute(ERROR_KEY, "Reservation already exist at that time");
             response.sendRedirect(request.getContextPath() + "/reservation/new?error=conflict");
 
         } catch (IllegalArgumentException e) {
             LOG.warning("Invalid reservation data: " + e.getMessage());
-            response.sendRedirect(request.getContextPath() + "/reservation/new?error=invalid_data");
+            request.setAttribute(ERROR_KEY, "Invalid Input data");
+            response.sendRedirect(request.getContextPath() + RESERVATION_PATH);
         }
     }
 

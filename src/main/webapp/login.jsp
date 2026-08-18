@@ -20,8 +20,8 @@
             <div class="login-title">Login</div>
             <div class="login-sub">Access the MeetReserve room booking area.</div>
 
-            <c:if test="${not empty param.error}">
-                <div class="alert alert-error">${param.error}</div>
+            <c:if test="${not empty error}">
+                <div class="alert alert-error">${error}</div>
             </c:if>
 
             <form action="${pageContext.request.contextPath}/login" method="post">
@@ -42,10 +42,6 @@
                 
                 <button type="submit" class="btn btn-primary btn-block">Sign in</button>
             </form>
-
-            <div class="login-foot">
-               Don’t have an account yet? Contact your administrator to create one.
-            </div>
         </div>
     </div>
     
@@ -75,7 +71,5 @@
 	        
 	    });
 	</script>
-	
-
 </body>
 </html>

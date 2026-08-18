@@ -90,12 +90,13 @@ public class UserManagementServlet extends HttpServlet {
 
         UserRequest userRequest = new UserRequest.Builder()
                 .name(name)
+                .role(roleParam)
                 .surname(surname)
                 .email(email)
                 .password(password)
                 .build();
 
-        Boolean created = userService.registerByAdmin(userRequest, role);
+        Boolean created = userService.register(userRequest);
 
         if (created) {
             response.sendRedirect(request.getContextPath() + "/users?success=user_created");

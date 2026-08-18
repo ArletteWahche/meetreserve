@@ -31,10 +31,10 @@ public class LoginServlet extends HttpServlet {
                     .name("Admin")
                     .surname("Admin")
                     .email("admin@gmail.com")
-                    .password("admin")
+                    .password("admin1")
                     .role("ADMINISTRATOR")
                     .build();
-            userService.registerByAdmin(adminUser, Role.ADMINISTRATOR);
+            userService.register(adminUser);
         }
     }
 
@@ -49,26 +49,32 @@ public class LoginServlet extends HttpServlet {
 
         if (isNotOk) {
             String errorMessage = "Login or password is Empty";
+            request.setAttribute("error", errorMessage);
             LOG.info(String.format("Login: %s or password: %s is Empty", email, password));
-            response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return; 
         }
 
         try {
-            UserResponse user = userService.login(email, password);
+            if(!userService.emailExists(email)){
+                request.setAttribute("error", "Invalid email : " + email);
+                LOG.info(String.format("Invalid Email. Login: %s ", email));
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
+                return;
+            }
 
+            UserResponse user = userService.login(email, password);
             if (user == null) {
-                String errorMessage = "Invalid credential";
-                LOG.info(String.format("Invalid credential. Login: %s password: %s", email, password));
-                response.sendRedirect(request.getContextPath() + "/login.jsp?error=" + errorMessage);
+                String errorMessage = String.format("Invalid password : %s", password);
+                request.setAttribute("error", errorMessage);
+                LOG.info(errorMessage);
+                response.sendRedirect(request.getContextPath() + "/login.jsp");
                 return; 
             }
 
             HttpSession session = request.getSession(true);
             session.setAttribute("userConnected", user);
-
             Role role = Role.valueOf(user.getRole());
-
             switch (role) {
                 case EMPLOYEE:
                     response.sendRedirect(request.getContextPath() + "/dashboard/employee");
@@ -88,8 +94,6 @@ public class LoginServlet extends HttpServlet {
 
         } catch (Exception e) {
             LOG.warning(String.format("error: %s", e.getMessage()));
-
-         
             if (!response.isCommitted()) {
                 request.setAttribute("error", "An error occurred. Please try again.");
                 request.getRequestDispatcher("/login.jsp").forward(request, response);

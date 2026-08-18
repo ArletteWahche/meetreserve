@@ -42,29 +42,16 @@ public class UserService {
     }
 
     public Boolean register(UserRequest user) {
-        if (emailExists(user.getEmail())) {
+        if (Boolean.TRUE.equals(emailExists(user.getEmail()))) {
             return false;
         }
 
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         User userToInsert = mapper.mapToEntity(user);
         userToInsert.setPassword(hashedPassword);
-        userToInsert.setRole(Role.EMPLOYEE);
+        userToInsert.setRole(user.getRole().isEmpty() ? Role.EMPLOYEE : Role.valueOf(user.getRole()));
 
         return userDao.insert(userToInsert);
-    }
-    
-    public Boolean registerByAdmin(UserRequest user, Role role) {
-    	if(emailExists(user.getEmail())) {
-    		return false;
-    	}
-    	
-    	String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-    	User userToInsert = mapper.mapToEntity(user);
-    	userToInsert.setPassword(hashedPassword);
-    	userToInsert.setRole(role);
-    	return userDao.insert(userToInsert);
-
     }
     
     public List<UserResponse> getAllUsers(){

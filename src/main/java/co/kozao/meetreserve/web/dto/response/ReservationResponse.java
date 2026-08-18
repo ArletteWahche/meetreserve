@@ -1,6 +1,5 @@
 package co.kozao.meetreserve.web.dto.response;
 
-import co.kozao.meetreserve.model.Reservation;
 import co.kozao.meetreserve.model.ReservationStatus;
 
 import java.sql.Time;
@@ -20,6 +19,9 @@ public class ReservationResponse {
     private Date createdAt;
     private Boolean deleted;
 
+    public ReservationResponse(){
+
+    }
 
     private ReservationResponse(Builder builder) {
         this.id = builder.id;
